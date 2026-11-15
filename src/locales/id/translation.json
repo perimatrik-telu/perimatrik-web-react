@@ -14,27 +14,37 @@
     "membersDesc": "<strong>PERIMATRIK</strong> hadir sebagai wadah bagi mahasiswa yang berjiwa besar untuk belajar, menjelajah, dan berkontribusi nyata bagi kelestarian alam serta kemanusiaan. Kami membangun ketangguhan melalui pengalaman langsung di jantung alam liar.",
     "divisionTitle": "DIVISI",
     "articleTitle": "Cerita Kita",
-    "noArticle": "Belum ada artikel.",
+    "noArticle": "Belum ada cerita",
     "learnToBeUs": "Learn To Be Us",
     "liar": "PERIMATRIK LIAR!",
-    "divisionSubtitle": "Temukan Jati Diri Kamu di Alam Bebas"
+    "divisionSubtitle": "Temukan Jati Diri Kamu di Alam Bebas",
+    "noArticleDesc": "Cerita perjalanan dan kegiatan PERIMATRIK akan tampil di sini setelah dipublikasikan."
   },
   "gallery": {
     "title": "Galeri",
     "subtitle": "Visualisasi perjalanan, aktivitas, dan pencapaian PERIMATRIK",
-    "noGallery": "Belum Ada Gallery"
+    "noGallery": "Belum ada galeri",
+    "noGalleryDesc": "Dokumentasi kegiatan PERIMATRIK akan tampil di sini setelah diunggah."
   },
   "article": {
     "title": "Artikel",
     "subtitle": "Cerita dan wawasan seputar PERIMATRIK",
-    "noArticle": "Belum Ada Artikel",
-    "readMore": "Selengkapnya"
+    "noArticle": "Belum ada artikel",
+    "readMore": "Selengkapnya",
+    "noArticleDesc": "Artikel terbaru akan tampil di sini setelah dipublikasikan.",
+    "notFound": "Artikel tidak ditemukan",
+    "notFoundDesc": "Artikel yang kamu cari mungkin sudah dihapus atau tautannya salah.",
+    "backToList": "Kembali ke Artikel"
   },
   "news": {
     "title": "Berita",
     "subtitle": "Kabar terbaru dan informasi resmi organisasi",
-    "noNews": "Belum Ada Berita",
-    "readMore": "Selengkapnya"
+    "noNews": "Belum ada berita",
+    "readMore": "Selengkapnya",
+    "noNewsDesc": "Kabar dan informasi resmi akan tampil di sini setelah dipublikasikan.",
+    "notFound": "Berita tidak ditemukan",
+    "notFoundDesc": "Berita yang kamu cari mungkin sudah dihapus atau tautannya salah.",
+    "backToList": "Kembali ke Berita"
   },
   "footer": {
     "tagline": "Menempuh Rimba • Menjaga Alam • Membentuk Karakter",
@@ -256,7 +266,11 @@
     "createSaveHint": "Lengkapi judul, konten, dan gambar sampul untuk publish.",
     "editSaveHint": "Simpan perubahan sebagai draft atau publish artikel yang sudah siap.",
     "deactivate": "Nonaktifkan",
-    "status": { "draft": "Draft", "active": "Aktif", "inactive": "Nonaktif" }
+    "status": {
+      "draft": "Draft",
+      "active": "Aktif",
+      "inactive": "Nonaktif"
+    }
   },
   "galleryForm": {
     "back": "Kembali ke galeri",

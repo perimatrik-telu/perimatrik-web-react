@@ -10,6 +10,7 @@ import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/captions.css";
 import "../../public/css/gallery.css";
 import { Box } from "@mui/material";
+import { faImages } from "@fortawesome/free-solid-svg-icons";
 import NoDataWidget from "@/components/no-data-widget";
 import InfiniteScroll from "react-infinite-scroll-component";
 import * as LazyLoadImageModule from "react-lazy-load-image-component";
@@ -134,14 +135,15 @@ export const GalleryPage: React.FC = () => {
         <>
           {galleries.length === 0 ? (
             <Box
-              minHeight="75vh"
+              minHeight="50vh"
               display="flex"
               justifyContent="center"
               alignItems="center"
             >
               <NoDataWidget
-                imageSrc="/images/empty-image.webp"
+                icon={faImages}
                 message={t("gallery.noGallery")}
+                description={t("gallery.noGalleryDesc")}
               />
             </Box>
           ) : (

@@ -14,27 +14,37 @@
     "membersDesc": "<strong>PERIMATRIK</strong> is a platform for big-hearted students to learn, explore, and make a real contribution to nature conservation and humanity. We build resilience through direct experience in the heart of the wild.",
     "divisionTitle": "DIVISIONS",
     "articleTitle": "Our Stories",
-    "noArticle": "No articles available.",
+    "noArticle": "No stories yet",
     "learnToBeUs": "Learn To Be Us",
     "liar": "PERIMATRIK WILD!",
-    "divisionSubtitle": "Discover Yourself in the Wild"
+    "divisionSubtitle": "Discover Yourself in the Wild",
+    "noArticleDesc": "Stories of PERIMATRIK journeys and activities will appear here once published."
   },
   "gallery": {
     "title": "Gallery",
     "subtitle": "Visualizing the journey, activities, and achievements of PERIMATRIK",
-    "noGallery": "No Galleries Available"
+    "noGallery": "No gallery yet",
+    "noGalleryDesc": "Photos of PERIMATRIK activities will appear here once uploaded."
   },
   "article": {
     "title": "Articles",
     "subtitle": "Stories and insights about PERIMATRIK",
-    "noArticle": "No Articles Available",
-    "readMore": "Read More"
+    "noArticle": "No articles yet",
+    "readMore": "Read More",
+    "noArticleDesc": "New articles will appear here once published.",
+    "notFound": "Article not found",
+    "notFoundDesc": "The article you are looking for may have been removed or the link is incorrect.",
+    "backToList": "Back to Articles"
   },
   "news": {
     "title": "News",
     "subtitle": "Latest news and official information of the organization",
-    "noNews": "No News Available",
-    "readMore": "Read More"
+    "noNews": "No news yet",
+    "readMore": "Read More",
+    "noNewsDesc": "Official news and announcements will appear here once published.",
+    "notFound": "News not found",
+    "notFoundDesc": "The news you are looking for may have been removed or the link is incorrect.",
+    "backToList": "Back to News"
   },
   "footer": {
     "tagline": "Exploring the Jungle • Protecting Nature • Building Character",
@@ -256,7 +266,11 @@
     "createSaveHint": "Add a title, content, and cover image to publish.",
     "editSaveHint": "Save changes as a draft or publish the article when it is ready.",
     "deactivate": "Deactivate",
-    "status": { "draft": "Draft", "active": "Active", "inactive": "Inactive" }
+    "status": {
+      "draft": "Draft",
+      "active": "Active",
+      "inactive": "Inactive"
+    }
   },
   "galleryForm": {
     "back": "Back to gallery",

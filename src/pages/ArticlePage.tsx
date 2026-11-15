@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { faPenNib } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import "../../public/css/article-list.css";
 
@@ -192,15 +193,11 @@ export const ArticlePage = () => {
               ))}
             </div>
           ) : (
-            <Box
-              minHeight="20vh"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
+            <Box py={4}>
               <NoDataWidget
-                imageSrc="/images/empty-image.webp"
+                icon={faPenNib}
                 message={t("article.noArticle")}
+                description={t("article.noArticleDesc")}
               />
             </Box>
           )}

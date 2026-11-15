@@ -19,7 +19,9 @@ import {
   faChevronRight,
   faUsers,
   faTree,
+  faPenNib,
 } from "@fortawesome/free-solid-svg-icons";
+import { NoDataWidget } from "../components";
 import { motion } from "framer-motion";
 import { Paper, Typography, Box } from "@mui/material";
 
@@ -339,14 +341,22 @@ const HomePage = () => {
                     style={{
                       height: 260,
                       borderRadius: 20,
-                      background: "#eaeaea",
+                      background:
+                        mode === "dark"
+                          ? "rgba(255, 255, 255, 0.06)"
+                          : "#eaeaea",
                     }}
                   />
                 </div>
               ))}
             </div>
           ) : articles.length === 0 ? (
-            <p className="text-muted">{t('home.noArticle')}</p>
+            <NoDataWidget
+              compact
+              icon={faPenNib}
+              message={t("home.noArticle")}
+              description={t("home.noArticleDesc")}
+            />
           ) : (
             <div className="swiper-container-wrapper">
               <Swiper

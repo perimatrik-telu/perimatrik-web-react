@@ -14,7 +14,10 @@ import {
   faCalendarDays,
   faEye,
   faPerson,
+  faMagnifyingGlass,
+  faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { Box } from "@mui/material";
 
 import { getNewsBySlug, getRelatedNews } from "../controllers";
 import { Loading, NoDataWidget, CommentSection } from "../components";
@@ -79,10 +82,14 @@ export const NewsDetailPage = () => {
 
   if (!newsData) {
     return (
-      <NoDataWidget
-        imageSrc="/images/empty-image.webp"
-        message="News not found"
-      />
+      <Box sx={{ py: { xs: 8, md: 12 }, px: 2 }}>
+        <NoDataWidget
+          icon={faMagnifyingGlass}
+          message={t("news.notFound")}
+          description={t("news.notFoundDesc")}
+          action={{ label: t("news.backToList"), to: "/news", icon: faArrowLeft }}
+        />
+      </Box>
     );
   }
 
