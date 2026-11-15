@@ -96,9 +96,9 @@ export const Profile = () => {
         >
           <Typography
             variant="body2"
-            fontWeight={800}
             noWrap
             sx={{
+              fontWeight: 800,
               color: "#ffffff",
               lineHeight: 1.15,
               maxWidth: { xs: 86, sm: 150 },
@@ -144,7 +144,7 @@ export const Profile = () => {
         onClose={handleClose2}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
-        PaperProps={{
+        slotProps={{ paper: {
           sx: {
             width: 280,
             mt: 1,
@@ -155,10 +155,10 @@ export const Profile = () => {
             overflow: "hidden",
             boxShadow: "0 18px 45px rgba(15, 23, 42, 0.14)",
           },
-        }}
+        } }}
       >
         <Box sx={{ px: 2, py: 1.75, bgcolor: alpha(theme.palette.primary.main, 0.075) }}>
-          <Stack direction="row" spacing={1.25} alignItems="center">
+          <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
             <Avatar
               src={user.avatar || "/images/default-avatar.webp"}
               alt={user.name}
@@ -167,7 +167,7 @@ export const Profile = () => {
               {user.name?.charAt(0)?.toUpperCase() ?? "U"}
             </Avatar>
             <Box sx={{ minWidth: 0 }}>
-              <Typography fontWeight={800} color="text.primary" noWrap>
+              <Typography color="text.primary" noWrap sx={{ fontWeight: 800 }}>
                 {user.name}
               </Typography>
               <Typography variant="body2" color="text.secondary" noWrap>
@@ -189,7 +189,7 @@ export const Profile = () => {
         <Divider sx={{ my: 1 }} />
 
         {/* LOGOUT */}
-        <Box px={2} pb={2}>
+        <Box sx={{ px: 2, pb: 2 }}>
           <Button
             onClick={handleLogout}
             variant="contained"

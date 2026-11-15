@@ -71,14 +71,14 @@ export const EditArticlePage = () => {
   }
 
   if (loading) {
-    return <Stack role="status" alignItems="center" spacing={2} sx={{ py: 8 }}><CircularProgress /><Typography>{t("articleForm.loading")}</Typography></Stack>;
+    return <Stack role="status" spacing={2} sx={{ alignItems: "center", py: 8 }}><CircularProgress /><Typography>{t("articleForm.loading")}</Typography></Stack>;
   }
 
   if (!articleData || loadError) {
     return (
       <Box sx={{ maxWidth: 640, mx: "auto", py: 5 }}>
         <Alert severity={loadError ? "error" : "info"}>{t(loadError ? "articleForm.loadError" : "articleForm.notFound")}</Alert>
-        <Stack direction="row" gap={2} sx={{ mt: 3 }}>
+        <Stack direction="row" sx={{ gap: 2, mt: 3 }}>
           <Button variant="outlined" color="inherit" onClick={() => navigate("/dashboard/article")}>{t("articleForm.back")}</Button>
           {loadError && <Button variant="contained" onClick={() => setRetry((value) => value + 1)}>{t("articleForm.retry")}</Button>}
         </Stack>

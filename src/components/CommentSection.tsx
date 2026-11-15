@@ -123,7 +123,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ articleId, newsI
             border: '1px solid rgba(0,0,0,0.05)'
           }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-              <Typography variant="subtitle2" fontWeight="800">{comment.user.name}</Typography>
+              <Typography variant="subtitle2" sx={{ fontWeight: "800" }}>{comment.user.name}</Typography>
               <Typography variant="caption" color="text.secondary">
                 {formatDistanceToNow(new Date(comment.created_at))} ago
               </Typography>
@@ -188,7 +188,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ articleId, newsI
     <Box sx={{ mt: 8, mb: 5 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
         <FontAwesomeIcon icon={faComments} style={{ color: '#e67817', fontSize: '1.5rem' }} />
-        <Typography variant="h5" fontWeight="900">Diskusi ({comments.length})</Typography>
+        <Typography variant="h5" sx={{ fontWeight: "900" }}>Diskusi ({comments.length})</Typography>
       </Box>
 
       {/* Comment Input */}
@@ -197,11 +197,11 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ articleId, newsI
           <Paper elevation={0} sx={{ p: 3, borderRadius: 4, border: '1px solid rgba(0,0,0,0.1)', bgcolor: 'background.paper' }}>
             {replyTo && (
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, bgcolor: 'rgba(230, 120, 23, 0.05)', p: 1.5, borderRadius: 2 }}>
-                <Typography variant="caption" fontWeight="bold">
+                <Typography variant="caption" sx={{ fontWeight: "bold" }}>
                   Replying to <b>{replyTo.user.name}</b>
                 </Typography>
                 <IconButton size="small" onClick={() => setReplyTo(null)}>
-                  <Typography variant="caption" fontWeight="bold">{t('crud.batal')}</Typography>
+                  <Typography variant="caption" sx={{ fontWeight: "bold" }}>{t('crud.batal')}</Typography>
                 </IconButton>
               </Box>
             )}

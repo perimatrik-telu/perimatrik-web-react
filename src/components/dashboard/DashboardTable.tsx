@@ -135,11 +135,10 @@ export const DashboardTable = <T extends { id: string | number }>({
         <Stack
           direction={{ xs: "column", lg: "row" }}
           spacing={2}
-          alignItems={{ xs: "stretch", lg: "center" }}
-          justifyContent="space-between"
+          sx={{ alignItems: { xs: "stretch", lg: "center" }, justifyContent: "space-between" }}
         >
           <Box sx={{ minWidth: 0 }}>
-            <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mb: 0.5 }}>
+            <Stack direction="row" spacing={1.25} sx={{ alignItems: "center", mb: 0.5 }}>
               <Typography variant="h6" sx={{ fontWeight: 900, lineHeight: 1.2 }}>
                 {title}
               </Typography>
@@ -165,8 +164,8 @@ export const DashboardTable = <T extends { id: string | number }>({
           <Stack
             direction={{ xs: "column", sm: "row" }}
             spacing={1.25}
-            alignItems={{ xs: "stretch", sm: "center" }}
             sx={{
+              alignItems: { xs: "stretch", sm: "center" },
               minWidth: { lg: 520 },
               width: { xs: "100%", lg: "auto" },
               flexWrap: "wrap",
@@ -187,19 +186,19 @@ export const DashboardTable = <T extends { id: string | number }>({
                 value={searchValue}
                 placeholder={searchPlaceholder}
                 onChange={(event) => onSearchChange(event.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FontAwesomeIcon icon={faMagnifyingGlass} />
-                    </InputAdornment>
-                  ),
-                }}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 1,
                     bgcolor: "background.paper",
                   },
                 }}
+                slotProps={{ input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    </InputAdornment>
+                  ),
+                } }}
               />
             )}
 
@@ -346,9 +345,7 @@ export const DashboardRowActions = ({
   <Stack
     direction="row"
     spacing={1}
-    justifyContent="flex-end"
-    alignItems="center"
-    sx={{ flexWrap: "wrap", rowGap: 1, maxWidth: 220, ml: "auto" }}
+    sx={{ justifyContent: "flex-end", alignItems: "center", flexWrap: "wrap", rowGap: 1, maxWidth: 220, ml: "auto" }}
   >
     <Button
       type="button"

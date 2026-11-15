@@ -270,7 +270,7 @@ export const ProfilePage = () => {
   return (
     <Box sx={{ pb: 5 }}>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" fontWeight="800" letterSpacing="-0.5px">
+        <Typography variant="h4" sx={{ fontWeight: "800", letterSpacing: "-0.5px" }}>
           Profil Saya
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -280,7 +280,7 @@ export const ProfilePage = () => {
 
       <Grid container spacing={4}>
         {/* LEFT SIDE: Identity Card */}
-        <Grid item xs={12} lg={4}>
+        <Grid size={{ xs: 12, lg: 4 }}>
           <Card 
             sx={{ 
               borderRadius: 5, 
@@ -333,7 +333,7 @@ export const ProfilePage = () => {
                 </IconButton>
               </Box>
 
-              <Typography variant="h5" fontWeight="bold" gutterBottom>
+              <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
                 {formData.name}
               </Typography>
               
@@ -351,7 +351,7 @@ export const ProfilePage = () => {
                 }}
               >
                 <FontAwesomeIcon icon={faShieldHalved} style={{ fontSize: '12px' }} />
-                <Typography variant="caption" fontWeight="800" sx={{ textTransform: "uppercase" }}>
+                <Typography variant="caption" sx={{ fontWeight: "800", textTransform: "uppercase" }}>
                   Akses {currentRoleLabel}
                 </Typography>
               </Box>
@@ -375,8 +375,8 @@ export const ProfilePage = () => {
                     <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: '16px' }} />
                   </Avatar>
                   <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight="bold">{t("profile.alamatEmail")}</Typography>
-                    <Typography variant="body2" fontWeight="600">{formData.email}</Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold" }}>{t("profile.alamatEmail")}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: "600" }}>{formData.email}</Typography>
                   </Box>
                 </Box>
 
@@ -387,8 +387,8 @@ export const ProfilePage = () => {
                         <FontAwesomeIcon icon={faIdCard} style={{ fontSize: '16px' }} />
                       </Avatar>
                       <Box>
-                        <Typography variant="caption" color="text.secondary" fontWeight="bold">NO. ANGGOTA</Typography>
-                        <Typography variant="body2" fontWeight="600">{formData.no_anggota || "Belum Diisi"}</Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold" }}>NO. ANGGOTA</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "600" }}>{formData.no_anggota || "Belum Diisi"}</Typography>
                       </Box>
                     </Box>
                     
@@ -397,8 +397,8 @@ export const ProfilePage = () => {
                         <FontAwesomeIcon icon={faMountain} style={{ fontSize: '16px' }} />
                       </Avatar>
                       <Box>
-                        <Typography variant="caption" color="text.secondary" fontWeight="bold">{t("profile.namaLapangan")}</Typography>
-                        <Typography variant="body2" fontWeight="600">{formData.nama_lapangan || "Belum Diisi"}</Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold" }}>{t("profile.namaLapangan")}</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "600" }}>{formData.nama_lapangan || "Belum Diisi"}</Typography>
                       </Box>
                     </Box>
                   </>
@@ -409,8 +409,8 @@ export const ProfilePage = () => {
                     <FontAwesomeIcon icon={faCircleCheck} style={{ fontSize: '16px' }} />
                   </Avatar>
                   <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight="bold">{t("profile.statusAkun")}</Typography>
-                    <Typography variant="body2" fontWeight="600" color="success.main">{t("profile.aktif")}</Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "bold" }}>{t("profile.statusAkun")}</Typography>
+                    <Typography variant="body2" color="success.main" sx={{ fontWeight: "600" }}>{t("profile.aktif")}</Typography>
                   </Box>
                 </Box>
               </Stack>
@@ -419,7 +419,7 @@ export const ProfilePage = () => {
         </Grid>
 
         {/* RIGHT SIDE: Form Settings */}
-        <Grid item xs={12} lg={8}>
+        <Grid size={{ xs: 12, lg: 8 }}>
           <Paper 
             sx={{ 
               borderRadius: 5, 
@@ -433,26 +433,26 @@ export const ProfilePage = () => {
               <Avatar sx={{ bgcolor: primaryOrange, width: 32, height: 32 }}>
                 <FontAwesomeIcon icon={faUser} style={{ fontSize: '14px' }} />
               </Avatar>
-              <Typography variant="h6" fontWeight="800">{t("profile.detail")}</Typography>
+              <Typography variant="h6" sx={{ fontWeight: "800" }}>{t("profile.detail")}</Typography>
             </Box>
             
             <Box component="form" onSubmit={handleUpdateProfile} sx={{ p: 4 }}>
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>{t("profile.namaLengkap")}</Typography>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>{t("profile.namaLengkap")}</Typography>
                   <TextField
                     fullWidth
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    InputProps={{
+                    slotProps={{ input: {
                       startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faUser} style={{ opacity: 0.4 }} /></InputAdornment>),
                       sx: { borderRadius: 3 }
-                    }}
+                    } }}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>{t("profile.email")}</Typography>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>{t("profile.email")}</Typography>
                   <TextField
                     fullWidth
                     name="email"
@@ -460,76 +460,76 @@ export const ProfilePage = () => {
                     value={formData.email}
                     disabled
                     onChange={handleChange}
-                    InputProps={{
+                    slotProps={{ input: {
                       startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faEnvelope} style={{ opacity: 0.4 }} /></InputAdornment>),
                       sx: { borderRadius: 3 }
-                    }}
+                    } }}
                   />
                 </Grid>
 
                 {userData?.role !== 'admin' && (
                   <>
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>No. Anggota</Typography>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>No. Anggota</Typography>
                       <TextField
                         fullWidth
                         name="no_anggota"
                         value={formData.no_anggota}
                         onChange={handleChange}
                         placeholder="P.XXX.XXX.XXX"
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faIdCard} style={{ opacity: 0.4 }} /></InputAdornment>),
                           sx: { borderRadius: 3 }
-                        }}
+                        } }}
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>{t("profile.lapangan")}</Typography>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>{t("profile.lapangan")}</Typography>
                       <TextField
                         fullWidth
                         name="nama_lapangan"
                         value={formData.nama_lapangan}
                         onChange={handleChange}
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faMountain} style={{ opacity: 0.4 }} /></InputAdornment>),
                           sx: { borderRadius: 3 }
-                        }}
+                        } }}
                       />
                     </Grid>
 
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>{t("profile.domisili")}</Typography>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>{t("profile.domisili")}</Typography>
                       <TextField
                         fullWidth
                         name="domisili"
                         value={formData.domisili}
                         onChange={handleChange}
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faMapMarkerAlt} style={{ opacity: 0.4 }} /></InputAdornment>),
                           sx: { borderRadius: 3 }
-                        }}
+                        } }}
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>Kontak / WhatsApp</Typography>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>Kontak / WhatsApp</Typography>
                       <TextField
                         fullWidth
                         name="kontak"
                         value={formData.kontak}
                         onChange={handleChange}
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faPhone} style={{ opacity: 0.4 }} /></InputAdornment>),
                           sx: { borderRadius: 3 }
-                        }}
+                        } }}
                       />
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Box sx={{ mt: 3, mb: 1 }}>
                         <Divider textAlign="left">
-                          <Stack direction="row" spacing={1} alignItems="center">
+                          <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                             <FontAwesomeIcon icon={faShareNodes} style={{ color: primaryOrange, fontSize: '14px' }} />
-                            <Typography variant="caption" fontWeight="800" color="text.secondary" sx={{ letterSpacing: 1.5 }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "800", letterSpacing: 1.5 }}>
                               TAUTAN MEDIA SOSIAL
                             </Typography>
                           </Stack>
@@ -537,85 +537,85 @@ export const ProfilePage = () => {
                       </Box>
                     </Grid>
 
-                    <Grid item xs={12} md={4}>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>{t("profile.instagram")}</Typography>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>{t("profile.instagram")}</Typography>
                       <TextField
                         fullWidth
                         name="instagram"
                         value={formData.instagram}
                         onChange={handleChange}
                         placeholder="@username"
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faInstagram} style={{ color: '#E4405F' }} /></InputAdornment>),
                           sx: { borderRadius: 3 }
-                        }}
+                        } }}
                       />
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>{t("profile.facebook")}</Typography>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>{t("profile.facebook")}</Typography>
                       <TextField
                         fullWidth
                         name="facebook"
                         value={formData.facebook}
                         onChange={handleChange}
                         placeholder="tautan profil"
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faFacebook} style={{ color: '#1877F2' }} /></InputAdornment>),
                           sx: { borderRadius: 3 }
-                        }}
+                        } }}
                       />
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>{t("profile.linkedin")}</Typography>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>{t("profile.linkedin")}</Typography>
                       <TextField
                         fullWidth
                         name="linkedin"
                         value={formData.linkedin}
                         onChange={handleChange}
                         placeholder="tautan profil"
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faLinkedin} style={{ color: '#0077B5' }} /></InputAdornment>),
                           sx: { borderRadius: 3 }
-                        }}
+                        } }}
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>{t("profile.tiktok")}</Typography>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>{t("profile.tiktok")}</Typography>
                       <TextField
                         fullWidth
                         name="tiktok"
                         value={formData.tiktok}
                         onChange={handleChange}
                         placeholder="@username"
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faTiktok} style={{ color: '#000000' }} /></InputAdornment>),
                           sx: { borderRadius: 3 }
-                        }}
+                        } }}
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>{t("profile.youtube")}</Typography>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>{t("profile.youtube")}</Typography>
                       <TextField
                         fullWidth
                         name="youtube"
                         value={formData.youtube}
                         onChange={handleChange}
                         placeholder="tautan kanal"
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (<InputAdornment position="start"><FontAwesomeIcon icon={faYoutube} style={{ color: '#FF0000' }} /></InputAdornment>),
                           sx: { borderRadius: 3 }
-                        }}
+                        } }}
                       />
                     </Grid>
                   </>
                 )}
 
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Box sx={{ mt: 3, mb: 1 }}>
                     <Divider textAlign="left">
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                         <FontAwesomeIcon icon={faLock} style={{ color: primaryOrange, fontSize: '14px' }} />
-                        <Typography variant="caption" fontWeight="800" color="text.secondary" sx={{ letterSpacing: 1.5 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: "800", letterSpacing: 1.5 }}>
                           KEAMANAN & AUTENTIKASI
                         </Typography>
                       </Stack>
@@ -623,8 +623,8 @@ export const ProfilePage = () => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>Ubah Password</Typography>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>Ubah Password</Typography>
                   <Button
                     variant="outlined"
                     color="primary"
@@ -636,7 +636,7 @@ export const ProfilePage = () => {
                   </Button>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
                     <Button
                       type="submit"
@@ -670,11 +670,11 @@ export const ProfilePage = () => {
         <DialogContent dividers>
           {passwordStep === 1 ? (
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   Untuk alasan keamanan, silakan masukkan password Anda saat ini sebelum menggantinya.
                 </Typography>
-                <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>Password Saat Ini</Typography>
+                <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>Password Saat Ini</Typography>
                 <TextField
                   fullWidth
                   name="old_password"
@@ -682,7 +682,7 @@ export const ProfilePage = () => {
                   value={passwordData.old_password}
                   onChange={handlePasswordChange}
                   placeholder="••••••••"
-                  InputProps={{
+                  slotProps={{ input: {
                     sx: { borderRadius: 3 },
                     endAdornment: (
                       <InputAdornment position="end">
@@ -691,14 +691,14 @@ export const ProfilePage = () => {
                         </IconButton>
                       </InputAdornment>
                     )
-                  }}
+                  } }}
                 />
               </Grid>
             </Grid>
           ) : (
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>Password Baru</Typography>
+              <Grid size={12}>
+                <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>Password Baru</Typography>
                 <TextField
                   fullWidth
                   name="password"
@@ -706,7 +706,7 @@ export const ProfilePage = () => {
                   value={passwordData.password}
                   onChange={handlePasswordChange}
                   placeholder="••••••••"
-                  InputProps={{
+                  slotProps={{ input: {
                     sx: { borderRadius: 3 },
                     endAdornment: (
                       <InputAdornment position="end">
@@ -715,11 +715,11 @@ export const ProfilePage = () => {
                         </IconButton>
                       </InputAdornment>
                     )
-                  }}
+                  } }}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1 }}>Konfirmasi Password Baru</Typography>
+              <Grid size={12}>
+                <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1 }}>Konfirmasi Password Baru</Typography>
                 <TextField
                   fullWidth
                   name="password_confirmation"
@@ -727,7 +727,7 @@ export const ProfilePage = () => {
                   value={passwordData.password_confirmation}
                   onChange={handlePasswordChange}
                   placeholder="••••••••"
-                  InputProps={{
+                  slotProps={{ input: {
                     sx: { borderRadius: 3 },
                     endAdornment: (
                       <InputAdornment position="end">
@@ -736,7 +736,7 @@ export const ProfilePage = () => {
                         </IconButton>
                       </InputAdornment>
                     )
-                  }}
+                  } }}
                 />
               </Grid>
             </Grid>

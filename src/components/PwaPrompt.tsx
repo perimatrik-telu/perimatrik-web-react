@@ -75,7 +75,7 @@ export const PwaPrompt = () => {
       >
         <CloseIcon fontSize="small" />
       </IconButton>
-      <Typography variant="subtitle1" fontWeight={800}>{t('pwa.installTitle')}</Typography>
+      <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>{t('pwa.installTitle')}</Typography>
       <Typography variant="body2" sx={{ mt: 0.5 }}>{t('pwa.installDesc')}</Typography>
       <Button variant="contained" onClick={handleInstall} sx={{ mt: 2, alignSelf: "flex-start" }}>{t('pwa.installBtn')}</Button>
     </Box>

@@ -56,8 +56,8 @@ export const Header = ({ toggleMobileSidebar }: ItemType) => {
           <IconMenu width="20" height="20" />
         </IconButton>
 
-        <Box flexGrow={1} />
-        <Stack spacing={1} direction="row" alignItems="center">
+        <Box sx={{ flexGrow: 1 }} />
+        <Stack spacing={1} direction="row" sx={{ alignItems: "center" }}>
           
           <IconButton
             size="small"

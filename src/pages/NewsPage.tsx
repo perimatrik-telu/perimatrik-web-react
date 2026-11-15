@@ -186,7 +186,7 @@ export const NewsPage = () => {
               ))}
             </div>
           ) : (
-            <Box py={4}>
+            <Box sx={{ py: 4 }}>
               <NoDataWidget
                 icon={faNewspaper}
                 message={t("news.noNews")}
@@ -197,11 +197,7 @@ export const NewsPage = () => {
 
           {newsData && newsData.meta.last_page > 1 && (
             <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              marginTop={5}
-              marginBottom={2}
+              sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 5, marginBottom: 2 }}
             >
               <Pagination
                 count={newsData.meta.last_page}

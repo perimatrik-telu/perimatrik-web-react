@@ -121,7 +121,7 @@ export const CreateNewsPage = () => {
 
   return (
     <Box sx={{ padding: 4 }}>
-      <Box mb={3}>
+      <Box sx={{ mb: 3 }}>
         <FormLabel
           htmlFor="news-image"
           sx={{ mb: 1, display: "block", fontWeight: "bold" }}
@@ -197,7 +197,7 @@ export const CreateNewsPage = () => {
         </Box>
       </Box>
 
-      <Box mb={1} width="100%">
+      <Box sx={{ mb: 1, width: "100%" }}>
         <FormLabel
           htmlFor="news-title"
           sx={{ mb: 1, display: "block", fontWeight: "bold" }}
@@ -209,15 +209,14 @@ export const CreateNewsPage = () => {
           fullWidth
           value={title}
           onChange={handleTitleChange}
-          inputProps={{
+          slotProps={{ htmlInput: {
             maxLength: 100,
-          }}
-          InputProps={{
+          }, input: {
             sx: {
               height: 44,
               padding: 0,
             },
-          }}
+          } }}
         />
         <Typography
           variant="body2"
@@ -236,7 +235,7 @@ export const CreateNewsPage = () => {
       </Box>
 
       {user?.role === 'admin' && (
-        <Box mt={3}>
+        <Box sx={{ mt: 3 }}>
           <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>
             Tanggal Terbit
           </FormLabel>
@@ -258,14 +257,14 @@ export const CreateNewsPage = () => {
             onChange={(e) => setPublishedAt(e.target.value)}
             disabled={autoPublish}
             sx={{ mt: 2 }}
-            InputLabelProps={{
+            slotProps={{ inputLabel: {
               shrink: true,
-            }}
+            } }}
           />
         </Box>
       )}
 
-      <Box mt={3} display="flex" justifyContent="flex-end">
+      <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
         <Button
           variant="contained"
           color="primary"

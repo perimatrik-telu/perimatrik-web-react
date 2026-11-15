@@ -293,7 +293,7 @@ export const AccessPage = () => {
       key: "user",
       label: "Informasi Pengguna",
       render: (user) => (
-        <Stack direction="row" spacing={1.5} alignItems="center">
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
           <Avatar src={user.avatar || undefined} sx={{ bgcolor: "primary.main", fontWeight: 800 }}>
             {user.name.charAt(0).toUpperCase()}
           </Avatar>
@@ -328,7 +328,7 @@ export const AccessPage = () => {
       width: 210,
       render: (user) =>
         user.member ? (
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
             <FontAwesomeIcon icon={faLink} style={{ fontSize: 12, opacity: 0.5 }} />
             <Typography variant="body2" sx={{ fontWeight: 700 }}>
               {user.member.no_anggota}
@@ -425,7 +425,7 @@ export const AccessPage = () => {
           <Stack spacing={3} sx={{ pt: 1 }}>
             {!isEditing && (
               <Box>
-                <Typography variant="subtitle2" fontWeight={800} sx={{ mb: 1 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1 }}>
                   Pilih Anggota Terdaftar (Opsional)
                 </Typography>
                 <Autocomplete
@@ -472,11 +472,11 @@ export const AccessPage = () => {
             <Divider />
 
             <Box>
-              <Typography variant="subtitle2" fontWeight={800} sx={{ mb: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1 }}>
                 Informasi Login
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <TextField
                     fullWidth
                     label="Nama Lengkap"
@@ -492,7 +492,7 @@ export const AccessPage = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <TextField
                     fullWidth
                     label="Alamat Email"
@@ -503,7 +503,7 @@ export const AccessPage = () => {
                     required
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <TextField
                     fullWidth
                     label={isEditing ? "Ubah Password" : "Password Akun"}
@@ -519,7 +519,7 @@ export const AccessPage = () => {
             </Box>
 
             <Box>
-              <Typography variant="subtitle2" fontWeight={800} sx={{ mb: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1 }}>
                 Akses Sistem
               </Typography>
               <FormControl fullWidth>
@@ -531,7 +531,7 @@ export const AccessPage = () => {
                   label="Peran Sistem"
                 >
                   <MenuItem value="member">
-                    <Stack direction="row" spacing={1.25} alignItems="center">
+                    <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
                       <FontAwesomeIcon icon={faUserIcon} style={{ opacity: 0.6 }} />
                       <Box>
                         <Typography variant="body1">{t("setting.member")}</Typography>
@@ -542,7 +542,7 @@ export const AccessPage = () => {
                     </Stack>
                   </MenuItem>
                   <MenuItem value="officer">
-                    <Stack direction="row" spacing={1.25} alignItems="center">
+                    <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
                       <FontAwesomeIcon icon={faUserGear} style={{ opacity: 0.6 }} />
                       <Box>
                         <Typography variant="body1">{t("setting.officer")}</Typography>
@@ -553,7 +553,7 @@ export const AccessPage = () => {
                     </Stack>
                   </MenuItem>
                   <MenuItem value="admin">
-                    <Stack direction="row" spacing={1.25} alignItems="center">
+                    <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
                       <FontAwesomeIcon icon={faUserShield} style={{ opacity: 0.6 }} />
                       <Box>
                         <Typography variant="body1">{t("setting.admin")}</Typography>

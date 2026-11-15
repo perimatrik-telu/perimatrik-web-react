@@ -112,7 +112,7 @@ export const GalleryListPage = () => {
     return (
       <Grid container spacing={3}>
         {[...Array(12)].map((_, i) => (
-          <Grid item key={i} xs={12} sm={6} md={4} lg={3}>
+          <Grid key={i} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <Skeleton variant="rectangular" height={260} />
             <Skeleton height={28} sx={{ mt: 1 }} />
           </Grid>
@@ -128,7 +128,7 @@ export const GalleryListPage = () => {
   // =============================
   if (user.role !== "admin" && user.role !== "officer" && user.role !== "member") {
     return (
-      <Box textAlign="center" mt={6}>
+      <Box sx={{ textAlign: "center", mt: 6 }}>
         <Typography variant="h4" color="error">
           Akses Ditolak
         </Typography>
@@ -153,10 +153,7 @@ export const GalleryListPage = () => {
     <>
       {/* ================= HEADER ================= */}
       <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={4}
+        sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}
       >
         <Typography variant="h4">Gallery</Typography>
         <Button
@@ -175,19 +172,19 @@ export const GalleryListPage = () => {
         placeholder="Cari berdasarkan caption"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        InputProps={{
+        sx={{ mb: 4 }}
+        slotProps={{ input: {
           startAdornment: (
             <InputAdornment position="start">
               <SearchIcon />
             </InputAdornment>
           ),
-        }}
-        sx={{ mb: 4 }}
+        } }}
       />
 
       {/* ================= EMPTY ================= */}
       {galleries && galleries.data.length === 0 && (
-        <Box textAlign="center" mt={8}>
+        <Box sx={{ textAlign: "center", mt: 8 }}>
           <Typography variant="h6" color="text.secondary">
             Gallery tidak ditemukan
           </Typography>
@@ -198,7 +195,7 @@ export const GalleryListPage = () => {
       <Grid container spacing={3}>
         {galleries &&
           galleries.data.map((gallery) => (
-            <Grid item key={gallery.id} xs={12} sm={6} md={4} lg={3}>
+            <Grid key={gallery.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
               <Card
                 sx={{
                   position: "relative",
@@ -255,7 +252,7 @@ export const GalleryListPage = () => {
                     p: 2,
                   }}
                 >
-                  <Typography color="white" fontWeight={600} noWrap>
+                  <Typography color="white" noWrap sx={{ fontWeight: 600 }}>
                     {gallery.caption}
                   </Typography>
                 </Box>

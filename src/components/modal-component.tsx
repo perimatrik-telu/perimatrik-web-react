@@ -41,15 +41,15 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
       onClose={onClose} 
       maxWidth={maxWidth} 
       fullWidth={fullWidth}
-      PaperProps={{
+      slotProps={{ paper: {
         sx: {
           borderRadius: 3,
           boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
         }
-      }}
+      } }}
     >
       <DialogTitle sx={{ m: 0, p: 2.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="h6" component="div" fontWeight="bold">
+        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
           {title}
         </Typography>
         <IconButton

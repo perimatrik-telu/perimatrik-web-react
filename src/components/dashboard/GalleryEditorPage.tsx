@@ -69,14 +69,14 @@ export const GalleryEditorPage = ({ mode, id }: GalleryEditorPageProps) => {
   }
 
   if (loading) {
-    return <Stack role="status" alignItems="center" spacing={2} sx={{ py: 8 }}><CircularProgress /><Typography>{t("galleryForm.loading")}</Typography></Stack>;
+    return <Stack role="status" spacing={2} sx={{ alignItems: "center", py: 8 }}><CircularProgress /><Typography>{t("galleryForm.loading")}</Typography></Stack>;
   }
 
   if (loadError) {
     return (
       <Box sx={{ maxWidth: 640, mx: "auto", py: 5 }}>
         <Alert severity="error">{t("galleryForm.loadError")}</Alert>
-        <Stack direction={{ xs: "column", sm: "row" }} gap={2} sx={{ mt: 3 }}>
+        <Stack direction={{ xs: "column", sm: "row" }} sx={{ gap: 2, mt: 3 }}>
           <Button variant="outlined" color="inherit" onClick={() => navigate("/dashboard/gallery")}>{t("galleryForm.back")}</Button>
           <Button variant="contained" onClick={() => setRetry((value) => value + 1)}>{t("galleryForm.retry")}</Button>
         </Stack>

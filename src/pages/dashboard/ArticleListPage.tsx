@@ -80,7 +80,7 @@ export const ArticleListPage = () => {
     return (
       <Grid container spacing={3}>
         {[...Array(8)].map((_, i) => (
-          <Grid item key={i} xs={12} sm={6} md={4} lg={3}>
+          <Grid key={i} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <Skeleton variant="rectangular" height={260} />
             <Skeleton height={28} sx={{ mt: 1 }} />
           </Grid>
@@ -96,7 +96,7 @@ export const ArticleListPage = () => {
   // =============================
   if (user.role !== "admin" && user.role !== "member") {
     return (
-      <Box textAlign="center" mt={6}>
+      <Box sx={{ textAlign: "center", mt: 6 }}>
         <Typography variant="h4" color="error">
           Akses Ditolak
         </Typography>
@@ -158,10 +158,10 @@ export const ArticleListPage = () => {
       {/* ================= HEADER ================= */}
       <Stack
         direction={{ xs: "column", sm: "row" }}
-        justifyContent="space-between"
-        alignItems="center"
         spacing={2}
         sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
           mb: 4,
           p: 2,
           borderRadius: 3,
@@ -175,14 +175,14 @@ export const ArticleListPage = () => {
           placeholder="Cari artikel..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps={{
+          sx={{ "& .MuiOutlinedInput-root": { borderRadius: 99 } }}
+          slotProps={{ input: {
             startAdornment: (
               <InputAdornment position="start">
                 <SearchIcon />
               </InputAdornment>
             ),
-          }}
-          sx={{ "& .MuiOutlinedInput-root": { borderRadius: 99 } }}
+          } }}
         />
 
         <Button
@@ -202,7 +202,7 @@ export const ArticleListPage = () => {
 
       {/* ================= EMPTY ================= */}
       {filtered.length === 0 && (
-        <Box textAlign="center" mt={8}>
+        <Box sx={{ textAlign: "center", mt: 8 }}>
           <Typography variant="h6" color="text.secondary">
             Artikel tidak ditemukan
           </Typography>
@@ -212,7 +212,7 @@ export const ArticleListPage = () => {
       {/* ================= GRID ================= */}
       <Grid container spacing={3}>
         {filtered.map((article) => (
-          <Grid item key={article.id} xs={12} sm={6} md={4} lg={3}>
+          <Grid key={article.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <Card
               sx={{
                 position: "relative",
@@ -283,7 +283,7 @@ export const ArticleListPage = () => {
                   p: 2,
                 }}
               >
-                <Typography color="white" fontWeight={600} noWrap>
+                <Typography color="white" noWrap sx={{ fontWeight: 600 }}>
                   {article.title}
                 </Typography>
               </Box>

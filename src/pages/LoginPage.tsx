@@ -375,7 +375,7 @@ export const LoginPage = () => {
         >
           <Grow in timeout={1000}>
             <Box sx={{ position: 'relative', zIndex: 3, textAlign: 'center' }}>
-              <Typography variant="h2" fontWeight="900" gutterBottom sx={{ letterSpacing: 0, textShadow: '0 4px 15px rgba(0,0,0,0.4)' }}>
+              <Typography variant="h2" gutterBottom sx={{ fontWeight: "900", letterSpacing: 0, textShadow: '0 4px 15px rgba(0,0,0,0.4)' }}>
                 PERIMATRIK
               </Typography>
               <Typography variant="h5" sx={{ opacity: 0.95, fontWeight: 500, maxWidth: 600, lineHeight: 1.6, mb: 2 }}>{t('login.heroTagline')}</Typography>
@@ -456,8 +456,7 @@ export const LoginPage = () => {
               </Box>
               <Typography
                 variant={isMobile ? 'h5' : 'h4'}
-                fontWeight="900"
-                sx={{ mb: 1.5, letterSpacing: 0, color: isMobile ? 'white' : 'grey.900' }}
+                sx={{ fontWeight: "900", mb: 1.5, letterSpacing: 0, color: isMobile ? 'white' : 'grey.900' }}
               >
                 {mode === 'login' ? t('login.signIn') : t('login.register')}
               </Typography>
@@ -534,7 +533,7 @@ export const LoginPage = () => {
               <form onSubmit={handleSubmit}>
                 <Stack spacing={{ xs: 2.5, md: 3.5 }}>
                   <Box>
-                    <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.email')}</Typography>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.email')}</Typography>
                     <TextField
                       fullWidth
                       variant="outlined"
@@ -543,7 +542,7 @@ export const LoginPage = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={isLoading}
                       sx={{ ...autofillStyles }}
-                      InputProps={{
+                      slotProps={{ input: {
                         startAdornment: (
                           <InputAdornment position="start">
                             <Email sx={{ color: primaryOrange, fontSize: 20 }} />
@@ -557,12 +556,12 @@ export const LoginPage = () => {
                           '&:hover fieldset': { borderColor: primaryOrange },
                           '&.Mui-focused fieldset': { borderColor: primaryOrange },
                         }
-                      }}
+                      } }}
                     />
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.password')}</Typography>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.password')}</Typography>
                     <TextField
                       fullWidth
                       placeholder="••••••••"
@@ -572,7 +571,7 @@ export const LoginPage = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       disabled={isLoading}
                       sx={{ ...autofillStyles }}
-                      InputProps={{
+                      slotProps={{ input: {
                         startAdornment: (
                           <InputAdornment position="start">
                             <Lock sx={{ color: primaryOrange, fontSize: 20 }} />
@@ -601,7 +600,7 @@ export const LoginPage = () => {
                           '&:hover fieldset': { borderColor: primaryOrange },
                           '&.Mui-focused fieldset': { borderColor: primaryOrange },
                         }
-                      }}
+                      } }}
                     />
                   </Box>
 
@@ -653,7 +652,7 @@ export const LoginPage = () => {
                           flexWrap: 'wrap',
                         }}
                       >
-                        <Typography variant="subtitle2" fontWeight="800" sx={{ ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.memberNo')}</Typography>
+                        <Typography variant="subtitle2" sx={{ fontWeight: "800", ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.memberNo')}</Typography>
                         {memberLookupSource && (
                           <Button
                             size="small"
@@ -716,26 +715,25 @@ export const LoginPage = () => {
                                 ? 'Nomor anggota dikunci karena terisi otomatis dari nama anggota.'
                                 : 'Pilih atau ketik nomor anggota, nama akan terisi otomatis.'
                             }
-                            FormHelperTextProps={{ sx: helperTextSx }}
-                            InputProps={{
-                              ...params.InputProps,
+                            slotProps={{ ...params.slotProps, formHelperText: { sx: helperTextSx }, input: {
+                              ...params.slotProps.input,
                               startAdornment: (
                                 <>
                                   <InputAdornment position="start">
                                     <Badge sx={{ color: primaryOrange, fontSize: 20 }} />
                                   </InputAdornment>
-                                  {params.InputProps.startAdornment}
+                                  {params.slotProps.input.startAdornment}
                                 </>
                               ),
                               sx: sharedInputSx
-                            }}
+                            } }}
                           />
                         )}
                       />
                     </Box>
 
                     <Box>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.memberName')}</Typography>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.memberName')}</Typography>
                       <Autocomplete
                         freeSolo
                         options={members}
@@ -777,19 +775,18 @@ export const LoginPage = () => {
                                 ? 'Nama anggota dikunci karena terisi otomatis dari nomor anggota.'
                                 : 'Pilih atau ketik nama anggota, nomor anggota akan terisi otomatis.'
                             }
-                            FormHelperTextProps={{ sx: helperTextSx }}
-                            InputProps={{
-                              ...params.InputProps,
+                            slotProps={{ ...params.slotProps, formHelperText: { sx: helperTextSx }, input: {
+                              ...params.slotProps.input,
                               startAdornment: (
                                 <>
                                   <InputAdornment position="start">
                                     <Person sx={{ color: primaryOrange, fontSize: 20 }} />
                                   </InputAdornment>
-                                  {params.InputProps.startAdornment}
+                                  {params.slotProps.input.startAdornment}
                                 </>
                               ),
                               sx: sharedInputSx
-                            }}
+                            } }}
                           />
                         )}
                       />
@@ -824,8 +821,7 @@ export const LoginPage = () => {
                       >
                         <Typography
                           variant="subtitle2"
-                          fontWeight="900"
-                          sx={{ mb: 1.5, color: isMobile ? mobileStrongText : desktopStrongText }}
+                          sx={{ fontWeight: "900", mb: 1.5, color: isMobile ? mobileStrongText : desktopStrongText }}
                         >{t('login.memberFound')}</Typography>
                         <Stack spacing={0.75}>
                           <Typography variant="body2" sx={{ color: isMobile ? mobileStrongText : desktopStrongText, overflowWrap: 'anywhere' }}>
@@ -854,7 +850,7 @@ export const LoginPage = () => {
                     )}
 
                     <Box>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.email')}</Typography>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.email')}</Typography>
                       <TextField
                         fullWidth
                         variant="outlined"
@@ -863,19 +859,19 @@ export const LoginPage = () => {
                         onChange={(e) => setRegisterEmail(e.target.value)}
                         disabled={isRegistering}
                         sx={{ ...autofillStyles }}
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (
                             <InputAdornment position="start">
                               <Email sx={{ color: primaryOrange, fontSize: 20 }} />
                             </InputAdornment>
                           ),
                           sx: sharedInputSx
-                        }}
+                        } }}
                       />
                     </Box>
 
                     <Box>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.password')}</Typography>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.password')}</Typography>
                       <TextField
                         fullWidth
                         placeholder="Minimal 8 karakter"
@@ -885,7 +881,7 @@ export const LoginPage = () => {
                         onChange={(e) => setRegisterPassword(e.target.value)}
                         disabled={isRegistering}
                         sx={{ ...autofillStyles }}
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (
                             <InputAdornment position="start">
                               <Lock sx={{ color: primaryOrange, fontSize: 20 }} />
@@ -904,12 +900,12 @@ export const LoginPage = () => {
                             </InputAdornment>
                           ),
                           sx: sharedInputSx
-                        }}
+                        } }}
                       />
                     </Box>
 
                     <Box>
-                      <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.confirmPassword')}</Typography>
+                      <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5, color: isMobile ? 'white' : 'grey.800' }}>{t('login.confirmPassword')}</Typography>
                       <TextField
                         fullWidth
                         placeholder="Ulangi password"
@@ -919,7 +915,7 @@ export const LoginPage = () => {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         disabled={isRegistering}
                         sx={{ ...autofillStyles }}
-                        InputProps={{
+                        slotProps={{ input: {
                           startAdornment: (
                             <InputAdornment position="start">
                               <Lock sx={{ color: primaryOrange, fontSize: 20 }} />
@@ -938,7 +934,7 @@ export const LoginPage = () => {
                             </InputAdornment>
                           ),
                           sx: sharedInputSx
-                        }}
+                        } }}
                       />
                     </Box>
 

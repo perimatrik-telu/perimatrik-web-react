@@ -109,7 +109,7 @@ export const ArticleForm = (props: ArticleFormProps) => {
       <Button component={RouterLink} to="/dashboard/article" color="inherit" startIcon={<ArrowBackIcon />} sx={{ mb: 1.5 }}>
         {t("articleForm.back")}
       </Button>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" gap={2} sx={{ mb: { xs: 3, sm: 4 } }}>
+      <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center", gap: 2, mb: { xs: 3, sm: 4 } }}>
         <Box sx={{ minWidth: 0 }}>
           <Typography component="h1" sx={{ fontSize: { xs: "1.75rem", sm: "2rem" }, fontWeight: 800, lineHeight: 1.25, mb: 1 }}>
             {t(isEdit ? "articleForm.editTitle" : "articleForm.createTitle")}
@@ -122,12 +122,12 @@ export const ArticleForm = (props: ArticleFormProps) => {
       </Stack>
 
       <Paper variant="outlined" sx={{ mb: 3, p: { xs: 2.5, sm: 3 } }}>
-        <Stack direction={{ xs: "column", md: "row" }} alignItems={{ xs: "stretch", md: "center" }} justifyContent="space-between" gap={2.5}>
+        <Stack direction={{ xs: "column", md: "row" }} sx={{ alignItems: { xs: "stretch", md: "center" }, justifyContent: "space-between", gap: 2.5 }}>
           <Box sx={{ maxWidth: 420 }}>
-            <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>{t("articleForm.saveTitle")}</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 700, mb: 0.5 }}>{t("articleForm.saveTitle")}</Typography>
             <Typography variant="body2" color="text.secondary">{t(isEdit ? "articleForm.editSaveHint" : "articleForm.createSaveHint")}</Typography>
           </Box>
-          <Stack direction={{ xs: "column", sm: "row" }} gap={1.5} sx={{ flexShrink: 0 }}>
+          <Stack direction={{ xs: "column", sm: "row" }} sx={{ gap: 1.5, flexShrink: 0 }}>
             {isEdit && <Button type="button" color="inherit" disabled={busy} onClick={() => props.onSubmit("inactive")}
               startIcon={props.loadingStatus === "inactive" ? <CircularProgress size={18} color="inherit" /> : <VisibilityOffOutlinedIcon />}>
               {t("articleForm.deactivate")}
@@ -153,10 +153,10 @@ export const ArticleForm = (props: ArticleFormProps) => {
             id="article-title" fullWidth multiline maxRows={3} value={props.title}
             placeholder={t("form.masukkanJudul")} onChange={(event) => props.onTitleChange(event.target.value)}
             disabled={Boolean(props.loadingStatus)}
-            inputProps={{ maxLength: 100, "aria-describedby": "article-title-hint" }}
             sx={{ "& .MuiInputBase-root": { fontSize: { xs: "1.25rem", sm: "1.5rem" }, fontWeight: 700, lineHeight: 1.5 } }}
+            slotProps={{ htmlInput: { maxLength: 100, "aria-describedby": "article-title-hint" } }}
           />
-          <Stack direction="row" justifyContent="space-between" gap={2} sx={{ mt: 1, mb: 3.5 }} id="article-title-hint">
+          <Stack direction="row" sx={{ justifyContent: "space-between", gap: 2, mt: 1, mb: 3.5 }} id="article-title-hint">
             <Typography variant="caption" color="text.secondary">{t("articleForm.titleHint")}</Typography>
             <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0 }}>{props.title.length}/100</Typography>
           </Stack>
@@ -181,7 +181,7 @@ export const ArticleForm = (props: ArticleFormProps) => {
 
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "minmax(0, 1fr)", sm: "repeat(2, minmax(0, 1fr))", lg: "minmax(0, 1fr)" }, gap: 3, minWidth: 0 }}>
           <Paper variant="outlined" sx={sectionStyle}>
-            <Typography component="h2" variant="subtitle1" fontWeight={700} sx={{ mb: 0.75 }}>{t("articleForm.coverTitle")}</Typography>
+            <Typography component="h2" variant="subtitle1" sx={{ fontWeight: 700, mb: 0.75 }}>{t("articleForm.coverTitle")}</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>{t("articleForm.coverHint")}</Typography>
             <input id="article-image" ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={(event) => {
               const file = event.target.files?.[0];
@@ -203,7 +203,7 @@ export const ArticleForm = (props: ArticleFormProps) => {
               })}
             >
               {props.isUploading ? (
-                <Stack alignItems="center" spacing={2} role="status">
+                <Stack spacing={2} role="status" sx={{ alignItems: "center" }}>
                   <CircularProgress size={28} /><Typography variant="body2">{t("articleForm.processingImage")}</Typography>
                 </Stack>
               ) : props.preview ? (
@@ -211,7 +211,7 @@ export const ArticleForm = (props: ArticleFormProps) => {
               ) : (
                 <>
                   <AddPhotoAlternateOutlinedIcon sx={{ fontSize: 36, color: "text.secondary", mb: 1.5 }} />
-                  <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>{t("articleForm.emptyCover")}</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>{t("articleForm.emptyCover")}</Typography>
                   <Typography variant="caption" color="text.secondary">{t("articleForm.dropHint")}</Typography>
                 </>
               )}
@@ -229,7 +229,7 @@ export const ArticleForm = (props: ArticleFormProps) => {
           </Paper>
 
           <Paper variant="outlined" sx={sectionStyle}>
-            <Typography component="h2" variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>{t("articleForm.publicationTitle")}</Typography>
+            <Typography component="h2" variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>{t("articleForm.publicationTitle")}</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>{t("articleForm.draftHint")}</Typography>
             {props.isAdmin && (
               <>
@@ -240,8 +240,7 @@ export const ArticleForm = (props: ArticleFormProps) => {
                 />
                 <TextField id="article-published-at" fullWidth type="datetime-local" label={t("form.tanggalPublikasi")}
                   value={props.publishedAt ?? ""} onChange={(event) => props.onPublishedAtChange(event.target.value)}
-                  disabled={props.autoPublish || busy} sx={{ mt: 2 }} InputLabelProps={{ shrink: true }}
-                  inputProps={{ style: { minWidth: 0 }, "aria-describedby": "article-publication-hint" }}
+                  disabled={props.autoPublish || busy} sx={{ mt: 2 }} slotProps={{ inputLabel: { shrink: true }, htmlInput: { style: { minWidth: 0 }, "aria-describedby": "article-publication-hint" } }}
                 />
                 <Typography id="article-publication-hint" variant="caption" color="text.secondary" sx={{ display: "block", mt: 1.5 }}>{t("articleForm.dateHint")}</Typography>
               </>

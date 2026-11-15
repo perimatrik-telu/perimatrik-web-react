@@ -141,7 +141,7 @@ const HomePage = () => {
                           boxShadow: '0 15px 30px rgba(230, 120, 23, 0.4)'
                         }}
                       >
-                        <Typography variant="h3" fontWeight="900" sx={{ mb: -0.5, letterSpacing: -1 }}>22+</Typography>
+                        <Typography variant="h3" sx={{ fontWeight: "900", mb: -0.5, letterSpacing: -1 }}>22+</Typography>
                         <Typography variant="caption" sx={{ fontWeight: '800', letterSpacing: 1.5, textTransform: 'uppercase', opacity: 0.9 }}>{t('home.established')}</Typography>
                       </Paper>
                     </motion.div>
@@ -168,7 +168,7 @@ const HomePage = () => {
                     </Typography>
                   </Box>
 
-                  <Typography variant="h2" fontWeight="900" sx={{ mb: 4, letterSpacing: '-2px', lineHeight: 1, color: 'var(--text-primary)' }}>
+                  <Typography variant="h2" sx={{ fontWeight: "900", mb: 4, letterSpacing: '-2px', lineHeight: 1, color: 'var(--text-primary)' }}>
                     Menempa Karakter di <br/>
                     <span style={{ 
                       background: 'linear-gradient(90deg, #e67817 0%, #ffb74d 100%)',
@@ -222,7 +222,7 @@ const HomePage = () => {
                           }}>
                             <FontAwesomeIcon icon={item.icon} style={{ color: item.color }} size="lg" />
                           </Box>
-                          <Typography variant="subtitle1" fontWeight="800" sx={{ mb: 0.5, color: 'var(--text-primary)' }}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: "800", mb: 0.5, color: 'var(--text-primary)' }}>
                             {item.title}
                           </Typography>
                           <Typography variant="body2" sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>

@@ -184,7 +184,7 @@ const DashboardLayout: React.FC<{ children?: ReactNode }> = ({ children }) => {
           alignItems: "center",
         }}
       >
-        <Stack alignItems="flex-start" sx={{ minWidth: 0, width: "100%" }}>
+        <Stack sx={{ alignItems: "flex-start", minWidth: 0, width: "100%" }}>
           <RouterLink to="/" style={{ display: "block", maxWidth: "100%" }}>
             <img
               src="/logos/logo-text-white.png"
@@ -212,12 +212,16 @@ const DashboardLayout: React.FC<{ children?: ReactNode }> = ({ children }) => {
             >
               <ListItemText
                 primary={group.groupName}
-                primaryTypographyProps={{
-                  fontWeight: 800,
-                  color: "inherit",
-                  fontSize: 12,
-                  letterSpacing: 0,
-                  textTransform: "uppercase",
+                slotProps={{
+                  primary: {
+                    sx: {
+                      fontWeight: 800,
+                      color: "inherit",
+                      fontSize: 12,
+                      letterSpacing: 0,
+                      textTransform: "uppercase",
+                    },
+                  },
                 }}
               />
               {openGroup[group.groupId] ? <ExpandLess /> : <ExpandMore />}
@@ -362,8 +366,7 @@ const DashboardLayout: React.FC<{ children?: ReactNode }> = ({ children }) => {
             <Stack
               direction="row"
               spacing={1.5}
-              alignItems="center"
-              sx={{ flexGrow: 1, minWidth: 0 }}
+              sx={{ alignItems: "center", flexGrow: 1, minWidth: 0 }}
             >
               <Box
                 sx={{
@@ -416,7 +419,9 @@ const DashboardLayout: React.FC<{ children?: ReactNode }> = ({ children }) => {
                 anchorEl={anchorElSettings}
                 open={Boolean(anchorElSettings)}
                 onClose={handleCloseSettings}
-                PaperProps={{
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                slotProps={{ paper: {
                   elevation: 0,
                   sx: {
                     overflow: 'visible',
@@ -430,12 +435,10 @@ const DashboardLayout: React.FC<{ children?: ReactNode }> = ({ children }) => {
                       transform: 'translateY(-50%) rotate(45deg)', zIndex: 0,
                     },
                   },
-                }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                } }}
               >
                 <MenuItem disabled sx={{ opacity: '1 !important', py: 0.5 }}>
-                  <Typography variant="overline" color="text.secondary" fontWeight={700}>
+                  <Typography variant="overline" color="text.secondary" sx={{ fontWeight: 700 }}>
                     {t('Pengaturan Tampilan', 'Pengaturan Tampilan')}
                   </Typography>
                 </MenuItem>

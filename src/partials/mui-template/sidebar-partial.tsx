@@ -72,12 +72,12 @@ export const MSidebar = ({
           anchor="left"
           open={isSidebarOpen}
           variant="permanent"
-          PaperProps={{
+          slotProps={{ paper: {
             sx: {
               boxSizing: "border-box",
               ...scrollbarStyles,
             },
-          }}
+          } }}
         >
           {/* ------------------------------------------- */}
           {/* Sidebar Box */}
@@ -138,17 +138,17 @@ export const MSidebar = ({
       open={isMobileSidebarOpen}
       onClose={onSidebarClose}
       variant="temporary"
-      PaperProps={{
+      slotProps={{ paper: {
         sx: {
           boxShadow: (theme) => theme.shadows[8],
           ...scrollbarStyles,
         },
-      }}
+      } }}
     >
       {/* ------------------------------------------- */}
       {/* Sidebar Box */}
       {/* ------------------------------------------- */}
-      <Box px={2}>
+      <Box sx={{ px: 2 }}>
         <Sidebar
           width={"270px"}
           collapsewidth="80px"

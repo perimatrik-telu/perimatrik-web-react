@@ -110,7 +110,7 @@ const AngkatanFormPage = () => {
 
   if (!user || (user.role !== "admin" && user.role !== "officer")) {
     return (
-      <Box textAlign="center" mt={6}>
+      <Box sx={{ textAlign: "center", mt: 6 }}>
         <Typography variant="h4" color="error">
           Akses Ditolak
         </Typography>
@@ -134,7 +134,7 @@ const AngkatanFormPage = () => {
       <Paper elevation={3} sx={{ p: 4, mt: 3 }}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={3}>
-            <Box width="100%">
+            <Box sx={{ width: "100%" }}>
               <FormLabel
                 htmlFor="nama_angkatan"
                 sx={{ mb: 1, display: "block", fontWeight: "bold" }}
@@ -149,13 +149,13 @@ const AngkatanFormPage = () => {
                 onChange={handleChange}
                 error={!!errors.nama_angkatan}
                 helperText={errors.nama_angkatan ? errors.nama_angkatan[0] : ""}
-                inputProps={{
+                slotProps={{ htmlInput: {
                   maxLength: 255,
-                }}
+                } }}
               />
             </Box>
 
-            <Box width="100%">
+            <Box sx={{ width: "100%" }}>
               <FormLabel
                 htmlFor="year"
                 sx={{ mb: 1, display: "block", fontWeight: "bold" }}
@@ -170,14 +170,14 @@ const AngkatanFormPage = () => {
                 onChange={handleChange}
                 error={!!errors.year}
                 helperText={errors.year ? errors.year[0] : ""}
-                inputProps={{
+                slotProps={{ htmlInput: {
                   maxLength: 4,
                   pattern: "\\d{4}", // HTML5 pattern for 4 digits
-                }}
+                } }}
               />
             </Box>
 
-            <Box display="flex" justifyContent="flex-end" gap={2} mt={3}>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}>
               <Button
                 variant="outlined"
                 color="secondary"

@@ -92,7 +92,7 @@ const TableComponent = <T extends TableRowData = TableRowData>({
           <TableRow>
             {columns.map((column) => (
               <TableCell key={column.key}>
-                <Typography variant="subtitle2" fontWeight={600}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                   {column.label}
                 </Typography>
               </TableCell>

@@ -172,7 +172,7 @@ const MemberListManagePage = () => {
 
   if (!user || user.role !== "admin") {
     return (
-      <Box textAlign="center" mt={6}>
+      <Box sx={{ textAlign: "center", mt: 6 }}>
         <Typography variant="h4" color="error">
           Akses Ditolak
         </Typography>

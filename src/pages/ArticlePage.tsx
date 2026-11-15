@@ -193,7 +193,7 @@ export const ArticlePage = () => {
               ))}
             </div>
           ) : (
-            <Box py={4}>
+            <Box sx={{ py: 4 }}>
               <NoDataWidget
                 icon={faPenNib}
                 message={t("article.noArticle")}
@@ -205,11 +205,7 @@ export const ArticlePage = () => {
           {/* PAGINATION */}
           {articlesData && articlesData.meta.last_page > 1 && (
             <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              marginTop={5}
-              marginBottom={2}
+              sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 5, marginBottom: 2 }}
             >
               <Pagination
                 count={articlesData.meta.last_page}

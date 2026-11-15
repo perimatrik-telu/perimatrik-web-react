@@ -73,9 +73,8 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
       maxWidth="md"
       fullWidth
       scroll="paper"
-      TransitionComponent={Fade}
       transitionDuration={400}
-      PaperProps={{
+      slotProps={{ paper: {
         sx: {
           borderRadius: 5,
           boxShadow: "0 25px 70px rgba(0,0,0,0.3)",
@@ -83,7 +82,8 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
           bgcolor: mode === "dark" ? "#121212" : "#ffffff",
           backgroundImage: "none",
         },
-      }}
+      } }}
+      slots={{ transition: Fade }}
     >
       {/* HEADER WITH PERIMATRIK ORANGE GRADIENT */}
       <DialogTitle
@@ -119,8 +119,8 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
           </Typography>
           <Typography
             variant="h4"
-            fontWeight="900"
             sx={{
+              fontWeight: "900",
               letterSpacing: "-1px",
               mt: -0.5,
               textShadow: "0 2px 10px rgba(0,0,0,0.2)",
@@ -164,11 +164,11 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
           },
         }}
       >
-        <Grid container spacing={3} marginTop={2}>
+        <Grid container spacing={3} sx={{ marginTop: 2 }}>
           <AnimatePresence>
             {members && members.length > 0 ? (
               members.map((member, index) => (
-                <Grid item xs={12} sm={6} md={4} key={member.id}>
+                <Grid key={member.id} size={{ xs: 12, sm: 6, md: 4 }}>
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -240,8 +240,8 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
 
                         <Typography
                           variant="subtitle1"
-                          fontWeight="900"
                           sx={{
+                            fontWeight: "900",
                             mb: 0.5,
                             color: mode === "dark" ? "white" : "#333",
                             lineHeight: 1.2,
@@ -269,8 +269,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                             <Typography
                               variant="caption"
                               color={primaryOrange}
-                              fontWeight="900"
-                              sx={{ fontStyle: "italic", letterSpacing: 0.5 }}
+                              sx={{ fontWeight: "900", fontStyle: "italic", letterSpacing: 0.5 }}
                             >
                               "{member.nama_lapangan.toUpperCase()}"
                             </Typography>
@@ -285,8 +284,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                         <Stack
                           direction="row"
                           spacing={1}
-                          justifyContent="center"
-                          sx={{ mb: 2 }}
+                          sx={{ justifyContent: "center", mb: 2 }}
                         >
                           {member.instagram && (
                             <IconButton
@@ -385,9 +383,8 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
 
                         <Stack
                           direction="row"
-                          alignItems="center"
-                          justifyContent="center"
                           spacing={1}
+                          sx={{ alignItems: "center", justifyContent: "center" }}
                         >
                           <FontAwesomeIcon
                             icon={faIdCard}
@@ -400,8 +397,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                           <Typography
                             variant="caption"
                             color="text.secondary"
-                            fontWeight="800"
-                            sx={{ letterSpacing: 1.5 }}
+                            sx={{ fontWeight: "800", letterSpacing: 1.5 }}
                           >
                             {member.no_anggota}
                           </Typography>
@@ -412,7 +408,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 </Grid>
               ))
             ) : (
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box sx={{ py: 10, textAlign: "center" }}>
                   <Zoom in timeout={500}>
                     <Box>
@@ -428,7 +424,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                       <Typography
                         variant="h6"
                         color="text.secondary"
-                        fontWeight="light"
+                        sx={{ fontWeight: "light" }}
                       >
                         Belum ada data anggota untuk angkatan ini.
                       </Typography>

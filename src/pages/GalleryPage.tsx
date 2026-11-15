@@ -111,7 +111,7 @@ export const GalleryPage: React.FC = () => {
         <Col className="text-center">
           <h1 className="mb-2">{t("gallery.title")}</h1>
           <p style={{ color: "var(--text-secondary)" }}>{t('gallery.subtitle')}</p>        
-          <Box display="flex" justifyContent="center" mt={3} mb={2}>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 3, mb: 2 }}>
             <ToggleButtonGroup
               value={viewMode}
               exclusive
@@ -135,10 +135,7 @@ export const GalleryPage: React.FC = () => {
         <>
           {galleries.length === 0 ? (
             <Box
-              minHeight="50vh"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
+              sx={{ minHeight: "50vh", display: "flex", justifyContent: "center", alignItems: "center" }}
             >
               <NoDataWidget
                 icon={faImages}
@@ -186,7 +183,7 @@ export const GalleryPage: React.FC = () => {
                 </Masonry>
               </InfiniteScroll>
             ) : (
-              <Box mb={5} sx={{ minHeight: 400 }}>
+              <Box sx={{ mb: 5, minHeight: 400 }}>
                 <MapboxView galleries={galleries} onPinClick={openLightboxOnSlide} mode={mode} />
               </Box>
             )

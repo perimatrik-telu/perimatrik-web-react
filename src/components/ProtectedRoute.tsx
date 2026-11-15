@@ -14,10 +14,7 @@ const ProtectedRoute = ({ requiredRoles }: ProtectedRouteProps) => {
     // Tampilkan loading indicator di tengah halaman
     return (
       <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}
       >
         <CircularProgress />
       </Box>

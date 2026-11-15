@@ -141,10 +141,10 @@ const DashboardPage = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 }, maxWidth: 1600, mx: "auto" }}>
       <Box sx={{ overflow: "hidden", border: "1px solid", borderColor: "divider", borderRadius: 2, bgcolor: "background.paper" }}>
-        <Grid container alignItems="stretch">
-          <Grid item xs={12} md={7.5}>
+        <Grid container sx={{ alignItems: "stretch" }}>
+          <Grid size={{ xs: 12, md: 7.5 }}>
             <Stack spacing={{ xs: 2.5, md: 3 }} sx={{ height: "100%", justifyContent: "center", p: { xs: 2.5, sm: 3.5, lg: 5 } }}>
-              <Stack direction="row" spacing={1.25} alignItems="center" flexWrap="wrap" useFlexGap>
+              <Stack direction="row" spacing={1.25} useFlexGap sx={{ alignItems: "center", flexWrap: "wrap" }}>
                 <Typography variant="overline" sx={{ color: orange, fontWeight: 800, letterSpacing: 0.4 }}>
                   {t("dashboard.heroEyebrow")}
                 </Typography>
@@ -175,7 +175,7 @@ const DashboardPage = () => {
               </Stack>
             </Stack>
           </Grid>
-          <Grid item xs={12} md={4.5} sx={{ minHeight: { xs: 220, sm: 280, md: 360 } }}>
+          <Grid sx={{ minHeight: { xs: 220, sm: 280, md: 360 } }} size={{ xs: 12, md: 4.5 }}>
             <Box component="img" src="/images/hightlight/1.webp" alt="" aria-hidden="true" sx={{ width: "100%", height: "100%", minHeight: { xs: 220, sm: 280, md: 360 }, maxHeight: { md: 520 }, display: "block", objectFit: "cover", objectPosition: "center 48%" }} />
           </Grid>
         </Grid>
@@ -183,7 +183,7 @@ const DashboardPage = () => {
 
       {contentSummary.length > 0 && (
         <Box component="section" aria-labelledby="dashboard-summary-title">
-          <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", sm: "flex-end" }} spacing={1.5} sx={{ mb: 2 }}>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "flex-end" }, mb: 2 }}>
             <Box>
               <Typography id="dashboard-summary-title" component="h2" variant="h5" sx={{ fontWeight: 800, mb: 0.5 }}>
                 {t("dashboard.summaryTitle")}
@@ -198,7 +198,7 @@ const DashboardPage = () => {
           </Stack>
           <Grid container spacing={2}>
             {contentSummary.map((item) => (
-              <Grid item key={item.to} xs={12} sm={6} lg={4}>
+              <Grid key={item.to} size={{ xs: 12, sm: 6, lg: 4 }}>
                 <Card
                   component={Link}
                   to={item.to}
@@ -211,7 +211,7 @@ const DashboardPage = () => {
                   }}
                 >
                   <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
-                    <Stack direction="row" alignItems="center" spacing={2}>
+                    <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
                       <Avatar sx={{ width: 48, height: 48, flex: "0 0 auto", color: item.color, bgcolor: alpha(item.color, 0.1), borderRadius: 1.5 }}>
                         <FontAwesomeIcon icon={item.icon} />
                       </Avatar>
@@ -242,7 +242,7 @@ const DashboardPage = () => {
           </Box>
           <Grid container spacing={1.5}>
             {secondaryActions.map((action) => (
-              <Grid item key={action.to} xs={12} sm={6} lg={4}>
+              <Grid key={action.to} size={{ xs: 12, sm: 6, lg: 4 }}>
                 <Button
                   component={Link}
                   to={action.to}

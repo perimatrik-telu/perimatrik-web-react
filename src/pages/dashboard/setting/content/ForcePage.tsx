@@ -197,7 +197,7 @@ export const ForcePage = () => {
               {["No", "Anggota", "Angkatan", "Role", "Action"].map(
                 (heading) => (
                   <TableCell key={heading}>
-                    <Typography variant="subtitle2" fontWeight={600}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                       {heading}
                     </Typography>
                   </TableCell>
@@ -218,20 +218,20 @@ export const ForcePage = () => {
                         sx={{ width: 35, height: 35, mr: 1 }}
                       />
                       <Box>
-                        <Typography fontWeight={600} fontSize={16}>
+                        <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
                           {product.name}
                         </Typography>
-                        <Typography color="textSecondary" fontSize={14}>
+                        <Typography color="textSecondary" sx={{ fontSize: 14 }}>
                           {product.post}
                         </Typography>
                       </Box>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    <Typography fontSize={14}>{product.angkatan}</Typography>
+                    <Typography sx={{ fontSize: 14 }}>{product.angkatan}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography fontSize={14}>{product.role}</Typography>
+                    <Typography sx={{ fontSize: 14 }}>{product.role}</Typography>
                   </TableCell>
                   <TableCell align="center">
                     <FontAwesomeIcon

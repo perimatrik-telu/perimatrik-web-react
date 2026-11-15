@@ -172,8 +172,8 @@ const AboutPage = () => {
         }}
       >
         <Container maxWidth="lg">
-          <Grid container spacing={8} alignItems="center">
-            <Grid item xs={12} lg={5}>
+          <Grid container spacing={8} sx={{ alignItems: "center" }}>
+            <Grid size={{ xs: 12, lg: 5 }}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.8, x: -50 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
@@ -228,8 +228,7 @@ const AboutPage = () => {
                       </Box>
                       <Typography
                         variant="caption"
-                        fontWeight="900"
-                        letterSpacing={1}
+                        sx={{ fontWeight: "900", letterSpacing: 1 }}
                       >
                         ADVENTURE
                       </Typography>
@@ -252,7 +251,7 @@ const AboutPage = () => {
               </motion.div>
             </Grid>
 
-            <Grid item xs={12} lg={7}>
+            <Grid size={{ xs: 12, lg: 7 }}>
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -282,8 +281,8 @@ const AboutPage = () => {
 
                   <Typography
                     variant="h1"
-                    fontWeight="900"
                     sx={{
+                      fontWeight: "900",
                       fontSize: { xs: "3rem", md: "4.5rem" },
                       lineHeight: 0.9,
                       letterSpacing: "-3px",
@@ -325,8 +324,7 @@ const AboutPage = () => {
                   >
                     <Typography
                       variant="subtitle2"
-                      fontWeight="900"
-                      sx={{ opacity: 0.5, letterSpacing: 2 }}
+                      sx={{ fontWeight: "900", opacity: 0.5, letterSpacing: 2 }}
                     >
                       {t('about.connect')}
                     </Typography>
@@ -407,7 +405,7 @@ const AboutPage = () => {
                 desc: t('about.stats.tahunDesc'),
               },
             ].map((stat, i) => (
-              <Grid item xs={12} md={4} key={i}>
+              <Grid key={i} size={{ xs: 12, md: 4 }}>
                 <motion.div
                   initial="hidden"
                   animate={inView ? "visible" : "hidden"}
@@ -451,8 +449,7 @@ const AboutPage = () => {
                     </Box>
                     <Typography
                       variant="h2"
-                      fontWeight="900"
-                      sx={{ color: "var(--text-primary)", mb: 0.5 }}
+                      sx={{ fontWeight: "900", color: "var(--text-primary)", mb: 0.5 }}
                     >
                       {inView ? (
                         <CountUp end={stat.count} duration={3} suffix="+" />
@@ -462,8 +459,8 @@ const AboutPage = () => {
                     </Typography>
                     <Typography
                       variant="h6"
-                      fontWeight="800"
                       sx={{
+                        fontWeight: "800",
                         color: primaryOrange,
                         mb: 1,
                         fontSize: "0.9rem",
@@ -504,8 +501,7 @@ const AboutPage = () => {
             </Typography>
             <Typography
               variant="h2"
-              fontWeight="900"
-              sx={{ color: "var(--text-primary)", letterSpacing: "-1.5px" }}
+              sx={{ fontWeight: "900", color: "var(--text-primary)", letterSpacing: "-1.5px" }}
             >
               {t('about.historyTitle')}
             </Typography>
@@ -663,16 +659,14 @@ const AboutPage = () => {
                         </Box>
                         <Typography
                           variant="h6"
-                          fontWeight="900"
-                          sx={{ color: primaryOrange }}
+                          sx={{ fontWeight: "900", color: primaryOrange }}
                         >
                           {step.year}
                         </Typography>
                       </Box>
                       <Typography
                         variant="h5"
-                        fontWeight="900"
-                        sx={{ mb: 2, color: "var(--text-primary)" }}
+                        sx={{ fontWeight: "900", mb: 2, color: "var(--text-primary)" }}
                       >
                         {step.title}
                       </Typography>
@@ -718,8 +712,7 @@ const AboutPage = () => {
             </Typography>
             <Typography
               variant="h2"
-              fontWeight="900"
-              sx={{ color: "var(--text-primary)", letterSpacing: "-1.5px" }}
+              sx={{ fontWeight: "900", color: "var(--text-primary)", letterSpacing: "-1.5px" }}
             >
               {t('about.philosophyHeading')}
             </Typography>
@@ -735,8 +728,8 @@ const AboutPage = () => {
             />
           </motion.div>
 
-          <Grid container spacing={10} alignItems="center">
-            <Grid item xs={12} lg={5}>
+          <Grid container spacing={10} sx={{ alignItems: "center" }}>
+            <Grid size={{ xs: 12, lg: 5 }}>
               <motion.div
                 animate={{ rotate: [0, 2, -2, 0] }}
                 transition={{
@@ -771,7 +764,7 @@ const AboutPage = () => {
               </motion.div>
             </Grid>
 
-            <Grid item xs={12} lg={7}>
+            <Grid size={{ xs: 12, lg: 7 }}>
               <Box
                 sx={{
                   display: "grid",
@@ -856,8 +849,8 @@ const AboutPage = () => {
                       </Typography>
                       <Typography
                         variant="body2"
-                        fontWeight="700"
                         sx={{
+                          fontWeight: "700",
                           color: "var(--text-secondary)",
                           fontSize: "0.85rem",
                         }}
@@ -877,7 +870,7 @@ const AboutPage = () => {
       <Box sx={{ py: 15, bgcolor: "var(--background-default)" }}>
         <Container maxWidth="lg">
           <Grid container spacing={6}>
-            <Grid item xs={12} lg={6}>
+            <Grid size={{ xs: 12, lg: 6 }}>
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -918,8 +911,7 @@ const AboutPage = () => {
                   </Typography>
                   <Typography
                     variant="h3"
-                    fontWeight="900"
-                    sx={{ color: "var(--text-primary)", mt: 1, mb: 4 }}
+                    sx={{ fontWeight: "900", color: "var(--text-primary)", mt: 1, mb: 4 }}
                   >
                     Konsep <span style={{ color: primaryOrange }}>RESOSIL</span>
                   </Typography>
@@ -957,7 +949,7 @@ const AboutPage = () => {
               </motion.div>
             </Grid>
 
-            <Grid item xs={12} lg={6}>
+            <Grid size={{ xs: 12, lg: 6 }}>
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -974,7 +966,7 @@ const AboutPage = () => {
                     boxShadow: `0 40px 80px ${primaryOrange}40`,
                   }}
                 >
-                  <Typography variant="h3" fontWeight="900" sx={{ mb: 5 }}>
+                  <Typography variant="h3" sx={{ fontWeight: "900", mb: 5 }}>
                     {t('about.tujuanStrategis')}
                   </Typography>
                   <Stack spacing={3}>
@@ -1031,8 +1023,7 @@ const AboutPage = () => {
             </Typography>
             <Typography
               variant="h2"
-              fontWeight="900"
-              sx={{ color: "var(--text-primary)", letterSpacing: "-1.5px" }}
+              sx={{ fontWeight: "900", color: "var(--text-primary)", letterSpacing: "-1.5px" }}
             >
               {t('about.daftarAngkatan')}
             </Typography>
@@ -1053,7 +1044,7 @@ const AboutPage = () => {
               {sejarahData
                 .slice(0, showAll ? sejarahData.length : 6)
                 .map((item, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={item.id}>
+                  <Grid key={item.id} size={{ xs: 12, sm: 6, md: 4 }}>
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
@@ -1094,8 +1085,8 @@ const AboutPage = () => {
                         </Box>
                         <Typography
                           variant="h4"
-                          fontWeight="900"
                           sx={{
+                            fontWeight: "900",
                             color: primaryOrange,
                             mb: 1,
                             position: "relative",
@@ -1105,8 +1096,8 @@ const AboutPage = () => {
                         </Typography>
                         <Typography
                           variant="h6"
-                          fontWeight="800"
                           sx={{
+                            fontWeight: "800",
                             mb: 3,
                             color: "var(--text-primary)",
                             letterSpacing: "-0.5px",

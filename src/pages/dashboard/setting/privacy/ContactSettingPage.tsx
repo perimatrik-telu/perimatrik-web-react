@@ -103,7 +103,7 @@ export const ContactSettingPage = () => {
     <Fade in={true} timeout={800}>
       <Box sx={{ pb: 5 }}>
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" fontWeight="800" letterSpacing="-0.5px">
+          <Typography variant="h4" sx={{ fontWeight: "800", letterSpacing: "-0.5px" }}>
             Konfigurasi Website
           </Typography>
           <Typography variant="body1" color="text.secondary">
@@ -113,7 +113,7 @@ export const ContactSettingPage = () => {
 
         <Grid container spacing={4}>
           {/* LEFT SIDE: Preview Card */}
-          <Grid item xs={12} lg={4}>
+          <Grid size={{ xs: 12, lg: 4 }}>
             <Paper 
               sx={{ 
                 p: 4, 
@@ -131,24 +131,24 @@ export const ContactSettingPage = () => {
               </Box>
               
               <Box sx={{ position: 'relative', zIndex: 1 }}>
-                <Typography variant="h6" fontWeight="800" sx={{ mb: 3, letterSpacing: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: "800", mb: 3, letterSpacing: 1 }}>
                   PRATINJAU LANGSUNG
                 </Typography>
                 
                 <Stack spacing={4}>
                   <Box>
                     <Typography variant="caption" sx={{ opacity: 0.8, fontWeight: 'bold', letterSpacing: 1.5 }}>{t("setting.emailResmi")}</Typography>
-                    <Typography variant="body1" fontWeight="600">{formData.contact_email || "Belum diisi"}</Typography>
+                    <Typography variant="body1" sx={{ fontWeight: "600" }}>{formData.contact_email || "Belum diisi"}</Typography>
                   </Box>
                   
                   <Box>
                     <Typography variant="caption" sx={{ opacity: 0.8, fontWeight: 'bold', letterSpacing: 1.5 }}>TELEPON / WHATSAPP</Typography>
-                    <Typography variant="body1" fontWeight="600">{formData.contact_phone || "Belum diisi"}</Typography>
+                    <Typography variant="body1" sx={{ fontWeight: "600" }}>{formData.contact_phone || "Belum diisi"}</Typography>
                   </Box>
                   
                   <Box>
                     <Typography variant="caption" sx={{ opacity: 0.8, fontWeight: 'bold', letterSpacing: 1.5 }}>{t("setting.alamatSekretariat")}</Typography>
-                    <Typography variant="body1" fontWeight="600" sx={{ lineHeight: 1.6 }}>{formData.contact_address || "Belum diisi"}</Typography>
+                    <Typography variant="body1" sx={{ fontWeight: "600", lineHeight: 1.6 }}>{formData.contact_address || "Belum diisi"}</Typography>
                   </Box>
 
                   <Box>
@@ -182,7 +182,7 @@ export const ContactSettingPage = () => {
           </Grid>
 
           {/* RIGHT SIDE: Form Settings */}
-          <Grid item xs={12} lg={8}>
+          <Grid size={{ xs: 12, lg: 8 }}>
             <Paper 
               sx={{ 
                 borderRadius: 5, 
@@ -196,51 +196,51 @@ export const ContactSettingPage = () => {
                 <Avatar sx={{ bgcolor: primaryOrange, width: 32, height: 32 }}>
                   <FontAwesomeIcon icon={faAddressCard} style={{ fontSize: '14px' }} />
                 </Avatar>
-                <Typography variant="h6" fontWeight="800">{t("setting.detailKontak")}</Typography>
+                <Typography variant="h6" sx={{ fontWeight: "800" }}>{t("setting.detailKontak")}</Typography>
               </Box>
               
               <Box component="form" onSubmit={handleSave} sx={{ p: 4 }}>
                 <Grid container spacing={4}>
-                  <Grid item xs={12} md={6}>
-                    <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5 }}>{t("setting.emailLabel")}</Typography>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5 }}>{t("setting.emailLabel")}</Typography>
                     <TextField
                       fullWidth
                       name="contact_email"
                       value={formData.contact_email || ""}
                       onChange={handleChange}
                       placeholder="contoh: info@perimatrik.org"
-                      InputProps={{
+                      slotProps={{ input: {
                         startAdornment: (
                           <InputAdornment position="start">
                             <FontAwesomeIcon icon={faEnvelope} style={{ color: primaryOrange, opacity: 0.6 }} />
                           </InputAdornment>
                         ),
                         sx: { borderRadius: 3 }
-                      }}
+                      } }}
                     />
                   </Grid>
 
-                  <Grid item xs={12} md={6}>
-                    <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5 }}>{t("setting.teleponLabel")}</Typography>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5 }}>{t("setting.teleponLabel")}</Typography>
                     <TextField
                       fullWidth
                       name="contact_phone"
                       value={formData.contact_phone || ""}
                       onChange={handleChange}
                       placeholder="contoh: +62 812 3456 7890"
-                      InputProps={{
+                      slotProps={{ input: {
                         startAdornment: (
                           <InputAdornment position="start">
                             <FontAwesomeIcon icon={faPhone} style={{ color: primaryOrange, opacity: 0.6 }} />
                           </InputAdornment>
                         ),
                         sx: { borderRadius: 3 }
-                      }}
+                      } }}
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5 }}>{t("setting.alamatLabel")}</Typography>
+                  <Grid size={12}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5 }}>{t("setting.alamatLabel")}</Typography>
                     <TextField
                       fullWidth
                       multiline
@@ -249,19 +249,19 @@ export const ContactSettingPage = () => {
                       value={formData.contact_address || ""}
                       onChange={handleChange}
                       placeholder="Masukkan alamat lengkap..."
-                      InputProps={{
+                      slotProps={{ input: {
                         startAdornment: (
                           <InputAdornment position="start" style={{ alignSelf: 'flex-start', marginTop: '14px' }}>
                             <FontAwesomeIcon icon={faMapMarkerAlt} style={{ color: primaryOrange, opacity: 0.6 }} />
                           </InputAdornment>
                         ),
                         sx: { borderRadius: 3 }
-                      }}
+                      } }}
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle2" fontWeight="800" sx={{ mb: 1, ml: 0.5 }}>{t("setting.mapsLabel")}</Typography>
+                  <Grid size={12}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "800", mb: 1, ml: 0.5 }}>{t("setting.mapsLabel")}</Typography>
                     <TextField
                       fullWidth
                       name="contact_maps"
@@ -269,18 +269,18 @@ export const ContactSettingPage = () => {
                       onChange={handleChange}
                       placeholder="Tempel URL src dari kode iframe Google Maps..."
                       helperText="Panduan: buka Google Maps > Bagikan > Sematkan peta > salin hanya URL pada atribut src='...'"
-                      InputProps={{
+                      slotProps={{ input: {
                         startAdornment: (
                           <InputAdornment position="start">
                             <FontAwesomeIcon icon={faMapLocationDot} style={{ color: primaryOrange, opacity: 0.6 }} />
                           </InputAdornment>
                         ),
                         sx: { borderRadius: 3 }
-                      }}
+                      } }}
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Paper
                       variant="outlined"
                       sx={{
@@ -290,9 +290,9 @@ export const ContactSettingPage = () => {
                         bgcolor: formData.allow_member_registration ? "success.50" : "grey.50",
                       }}
                     >
-                      <Stack direction={{ xs: "column", md: "row" }} spacing={2} justifyContent="space-between" alignItems={{ xs: "flex-start", md: "center" }}>
+                      <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ justifyContent: "space-between", alignItems: { xs: "flex-start", md: "center" } }}>
                         <Box>
-                          <Typography variant="subtitle1" fontWeight="800">
+                          <Typography variant="subtitle1" sx={{ fontWeight: "800" }}>
                             Registrasi Anggota Publik
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
@@ -315,7 +315,7 @@ export const ContactSettingPage = () => {
                     </Paper>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Divider sx={{ my: 1, opacity: 0.6 }} />
                     <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                       <Button

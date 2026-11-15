@@ -102,12 +102,12 @@ export const GalleryForm = (props: GalleryFormProps) => {
         </Box>
 
         <Paper variant="outlined" sx={{ ...sectionStyle, mb: 3 }}>
-          <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ xs: "stretch", sm: "center" }} gap={2.5} sx={{ flexWrap: "wrap" }}>
+          <Stack direction={{ xs: "column", sm: "row" }} sx={{ justifyContent: "space-between", alignItems: { xs: "stretch", sm: "center" }, gap: 2.5, flexWrap: "wrap" }}>
             <Box sx={{ maxWidth: 480, minWidth: 0 }}>
-              <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>{t("galleryForm.saveTitle")}</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 700, mb: 0.5 }}>{t("galleryForm.saveTitle")}</Typography>
               <Typography variant="body2" color="text.secondary">{t(isEdit ? "galleryForm.editSaveHint" : "galleryForm.createSaveHint")}</Typography>
             </Box>
-            <Stack direction={{ xs: "column", sm: "row" }} gap={1.5} sx={{ flexShrink: 0, flexWrap: "wrap", maxWidth: "100%" }}>
+            <Stack direction={{ xs: "column", sm: "row" }} sx={{ gap: 1.5, flexShrink: 0, flexWrap: "wrap", maxWidth: "100%" }}>
               <Button type="button" component={RouterLink} to="/dashboard/gallery" variant="outlined" color="inherit" disabled={busy}>{t("crud.batal")}</Button>
               <Button type="submit" variant="contained" disabled={busy || (!isEdit && !props.image)}
                 startIcon={props.saving ? <CircularProgress size={18} color="inherit" /> : <SaveOutlinedIcon />}>
@@ -120,7 +120,7 @@ export const GalleryForm = (props: GalleryFormProps) => {
 
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "minmax(0, 1fr)", lg: "minmax(0, 1fr) 340px" }, gap: { xs: 2.5, sm: 3 }, alignItems: "start" }}>
           <Paper variant="outlined" sx={sectionStyle}>
-            <Typography component="h2" variant="subtitle1" fontWeight={700} sx={{ mb: 0.75 }}>{t("galleryForm.photoTitle")}</Typography>
+            <Typography component="h2" variant="subtitle1" sx={{ fontWeight: 700, mb: 0.75 }}>{t("galleryForm.photoTitle")}</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>{t("galleryForm.photoHint")}</Typography>
             <input ref={inputRef} id="gallery-image" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" hidden
               onChange={(event) => {
@@ -145,19 +145,19 @@ export const GalleryForm = (props: GalleryFormProps) => {
               })}
             >
               {props.isUploading ? (
-                <Stack alignItems="center" spacing={2} role="status"><CircularProgress size={28} /><Typography variant="body2">{t("galleryForm.processingImage")}</Typography></Stack>
+                <Stack spacing={2} role="status" sx={{ alignItems: "center" }}><CircularProgress size={28} /><Typography variant="body2">{t("galleryForm.processingImage")}</Typography></Stack>
               ) : props.preview ? (
                 <Box component="img" src={props.preview} alt={t("galleryForm.preview")} sx={{ width: "100%", height: { xs: 280, sm: 440 }, display: "block", objectFit: "contain", borderRadius: 0.5 }} />
               ) : (
-                <Stack alignItems="center" spacing={1.5} sx={{ textAlign: "center" }}>
+                <Stack spacing={1.5} sx={{ alignItems: "center", textAlign: "center" }}>
                   <AddPhotoAlternateOutlinedIcon sx={{ fontSize: 44, color: "text.secondary" }} />
-                  <Typography variant="body2" fontWeight={600}>{t("galleryForm.emptyPhoto")}</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>{t("galleryForm.emptyPhoto")}</Typography>
                   <Typography variant="body2" color="text.secondary">{t("galleryForm.dropHint")}</Typography>
                   <Typography variant="caption" color="text.secondary">{t("galleryForm.formats")}</Typography>
                 </Stack>
               )}
             </Box>
-            <Stack direction={{ xs: "column", sm: "row" }} gap={1.5} sx={{ mt: 2 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} sx={{ gap: 1.5, mt: 2 }}>
               <Button type="button" variant="outlined" color="inherit" disabled={busy} onClick={() => inputRef.current?.click()}>
                 {t(props.preview ? "galleryForm.replaceImage" : "form.unggahGambar")}
               </Button>
@@ -170,21 +170,20 @@ export const GalleryForm = (props: GalleryFormProps) => {
           </Paper>
 
           <Paper variant="outlined" sx={sectionStyle}>
-            <Typography component="h2" variant="subtitle1" fontWeight={700} sx={{ mb: 0.75 }}>{t("galleryForm.captionTitle")}</Typography>
+            <Typography component="h2" variant="subtitle1" sx={{ fontWeight: 700, mb: 0.75 }}>{t("galleryForm.captionTitle")}</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>{t("galleryForm.captionHint")}</Typography>
             <FormLabel htmlFor="gallery-caption" sx={{ display: "block", color: "text.primary", fontWeight: 700, mb: 1.5 }}>{t("galleryForm.captionLabel")}</FormLabel>
             <TextField id="gallery-caption" fullWidth multiline minRows={5} maxRows={12} disabled={props.saving}
-              placeholder={t("galleryForm.captionPlaceholder")} value={props.caption} onChange={(event) => props.onCaptionChange(event.target.value)}
-              inputProps={{ "aria-describedby": "gallery-caption-hint" }} sx={{ "& .MuiInputBase-root": { lineHeight: 1.7 } }}
+              placeholder={t("galleryForm.captionPlaceholder")} value={props.caption} onChange={(event) => props.onCaptionChange(event.target.value)} sx={{ "& .MuiInputBase-root": { lineHeight: 1.7 } }} slotProps={{ htmlInput: { "aria-describedby": "gallery-caption-hint" } }}
             />
             <Typography id="gallery-caption-hint" variant="caption" color="text.secondary" sx={{ display: "block", mt: 1.5 }}>{t("galleryForm.captionOptional")}</Typography>
           </Paper>
         </Box>
 
         <Paper variant="outlined" sx={{ ...sectionStyle, mt: 3 }}>
-          <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ xs: "flex-start", sm: "center" }} justifyContent="space-between" gap={2} sx={{ mb: 2, flexWrap: "wrap" }}>
+          <Stack direction={{ xs: "column", sm: "row" }} sx={{ alignItems: { xs: "flex-start", sm: "center" }, justifyContent: "space-between", gap: 2, mb: 2, flexWrap: "wrap" }}>
             <Box>
-              <Typography component="h2" variant="subtitle1" fontWeight={700} sx={{ mb: 0.75 }}>{t("galleryForm.locationTitle")}</Typography>
+              <Typography component="h2" variant="subtitle1" sx={{ fontWeight: 700, mb: 0.75 }}>{t("galleryForm.locationTitle")}</Typography>
               <Typography variant="body2" color="text.secondary">{t("galleryForm.locationHint")}</Typography>
             </Box>
             <FormControlLabel sx={{ m: 0, flexShrink: 0 }} label={t("galleryForm.showMap")}
@@ -199,16 +198,14 @@ export const GalleryForm = (props: GalleryFormProps) => {
                   }} />
                 </Suspense>
               </Box>
-              <Stack gap={2} sx={{ minWidth: 0 }}>
+              <Stack sx={{ gap: 2, minWidth: 0 }}>
                 <Typography variant="body2" color="text.secondary">{t("galleryForm.coordinatesHint")}</Typography>
                 <TextField id="gallery-latitude" label={t("galleryForm.latitude")} fullWidth value={props.latitude} disabled={props.saving}
                   onChange={(event) => props.onLatitudeChange(event.target.value)}
-                  error={props.latitude !== "" && !latitudeValid} helperText={props.latitude !== "" && !latitudeValid ? t("galleryForm.latitudeError") : undefined}
-                  inputProps={{ inputMode: "decimal" }} />
+                  error={props.latitude !== "" && !latitudeValid} helperText={props.latitude !== "" && !latitudeValid ? t("galleryForm.latitudeError") : undefined} slotProps={{ htmlInput: { inputMode: "decimal" } }} />
                 <TextField id="gallery-longitude" label={t("galleryForm.longitude")} fullWidth value={props.longitude} disabled={props.saving}
                   onChange={(event) => props.onLongitudeChange(event.target.value)}
-                  error={props.longitude !== "" && !longitudeValid} helperText={props.longitude !== "" && !longitudeValid ? t("galleryForm.longitudeError") : undefined}
-                  inputProps={{ inputMode: "decimal" }} />
+                  error={props.longitude !== "" && !longitudeValid} helperText={props.longitude !== "" && !longitudeValid ? t("galleryForm.longitudeError") : undefined} slotProps={{ htmlInput: { inputMode: "decimal" } }} />
                 {position && <Typography variant="caption" color="text.secondary">{t("galleryForm.selectedCoordinates", { latitude: position[0].toFixed(5), longitude: position[1].toFixed(5) })}</Typography>}
               </Stack>
             </Box>

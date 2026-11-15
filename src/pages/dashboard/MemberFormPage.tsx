@@ -213,7 +213,7 @@ const MemberFormPage = () => {
 
   if (!user || user.role !== "admin") {
     return (
-      <Box textAlign="center" mt={6}>
+      <Box sx={{ textAlign: "center", mt: 6 }}>
         <Typography variant="h4" color="error">{t("form.aksesDitolak")}</Typography>
         <Button sx={{ mt: 3 }} variant="contained" onClick={() => navigate("/")}>{t("form.kembaliBeranda")}</Button>
       </Box>
@@ -226,7 +226,7 @@ const MemberFormPage = () => {
 
   return (
     <Box sx={{ maxWidth: 900, mx: 'auto' }}>
-      <Typography variant="h4" fontWeight="bold" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
         {isEditMode ? "Ubah Detail Anggota" : "Daftarkan Anggota Baru"}
       </Typography>
       <Typography variant="body1" color="textSecondary" sx={{ mb: 4 }}>
@@ -242,7 +242,7 @@ const MemberFormPage = () => {
             </Alert>
 
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("form.hubungkanAkun")}</FormLabel>
                 <TextField
                   select
@@ -262,7 +262,7 @@ const MemberFormPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>No. Anggota</FormLabel>
                 <TextField
                   fullWidth
@@ -275,7 +275,7 @@ const MemberFormPage = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("profile.namaLengkap")}</FormLabel>
                 <TextField
                   fullWidth
@@ -287,7 +287,7 @@ const MemberFormPage = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("profile.lapangan")}</FormLabel>
                 <TextField
                   fullWidth
@@ -298,7 +298,7 @@ const MemberFormPage = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>Angkatan</FormLabel>
                 <TextField
                   select
@@ -316,7 +316,7 @@ const MemberFormPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("profile.domisili")}</FormLabel>
                 <TextField
                   fullWidth
@@ -326,7 +326,7 @@ const MemberFormPage = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("form.kontak")}</FormLabel>
                 <TextField
                   fullWidth
@@ -358,14 +358,14 @@ const MemberFormPage = () => {
                   {previewAvatar && (
                     <Button color="error" sx={{ ml: 2 }} onClick={handleRemoveAvatar}>{t('crud.hapus')}</Button>
                   )}
-                  <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
+                  <Typography variant="caption" sx={{ display: "block", mt: 1, color: 'text.secondary' }}>
                     JPG, PNG, atau GIF. Maksimal 2MB.
                   </Typography>
                 </Box>
               </Box>
             </Box>
 
-            <Box display="flex" justifyContent="flex-end" gap={2} pt={2}>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, pt: 2 }}>
               <Button variant="text" onClick={() => navigate("/dashboard/member")}>{t('crud.batal')}</Button>
               <Button
                 type="submit"

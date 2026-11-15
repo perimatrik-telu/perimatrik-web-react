@@ -102,7 +102,7 @@ const AngkatanListPage = () => {
 
   if (!user || (user.role !== "admin" && user.role !== "officer")) {
     return (
-      <Box textAlign="center" mt={6}>
+      <Box sx={{ textAlign: "center", mt: 6 }}>
         <Typography variant="h4" color="error">
           Akses Ditolak
         </Typography>
