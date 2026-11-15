@@ -1,0 +1,57 @@
+.timeline-force {
+  --line-color: #e67817;
+  --dot-color: #e67817;
+  --card-border-color: #e67817;
+  --card-bg-color: #ffffff;
+}
+
+.timeline-line {
+  background-color: var(--line-color);
+  width: 6px; /* Slightly thicker line */
+}
+
+.timeline-dot {
+  background-color: var(--dot-color);
+  width: 20px; /* Increase dot size */
+  height: 20px; /* Increase dot size */
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 3px var(--dot-color);
+}
+
+.timeline-card {
+  border: none; /* Remove border, rely on shadow */
+  background-color: var(--card-bg-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: calc(50% - 40px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add a default shadow */
+  border-radius: 12px; /* Increase border-radius */
+}
+
+.timeline-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.justify-content-md-start .timeline-card {
+  margin-left: 40px;
+}
+
+.justify-content-end .timeline-card {
+  margin-right: 40px;
+}
+
+@media (max-width: 767.98px) {
+  .timeline-card {
+    width: calc(100% - 40px);
+  }
+
+  .justify-content-md-start .timeline-card {
+    margin-left: 0;
+  }
+
+  .justify-content-end .timeline-card {
+    margin-left: 40px;
+    margin-right: 0;
+  }
+}

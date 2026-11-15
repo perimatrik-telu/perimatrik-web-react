@@ -1,0 +1,55 @@
+.about-modal .modal-content {
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border: none;
+  background-color: var(--background-paper);
+}
+
+.about-modal .modal-header {
+  border-bottom: none;
+  padding: 1.5rem;
+}
+
+.about-modal .modal-title {
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.about-modal .btn-close {
+  font-size: 1rem;
+}
+
+.about-modal .modal-body {
+  padding: 1.5rem;
+}
+
+.about-modal .card {
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--background-default);
+}
+
+.about-modal .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.about-modal .card-img-top {
+  height: 180px;
+  object-fit: cover;
+}
+
+.about-modal .card-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.about-modal .card-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}

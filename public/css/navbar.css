@@ -1,0 +1,114 @@
+.navbar-partial-container {
+  z-index: 1000; /* Ensure navbar is always on top */
+}
+
+.navbar-partial {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 1rem 0;
+}
+
+.navbar-partial.scrolled {
+  background-color: var(--background-paper) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand img {
+  transition: filter 0.3s ease;
+}
+
+.navbar-partial.scrolled .navbar-brand img.logo-white {
+  filter: brightness(0) invert(0);
+}
+
+.navbar-partial .nav-link {
+  font-weight: 600;
+  color: var(--text-primary) !important; /* Default text color */
+  margin: 0 15px;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* Specific rule for light theme, unscrolled navbar */
+[data-theme='light'] .navbar-partial:not(.scrolled) .nav-link {
+  color: white !important;
+}
+
+.navbar-partial.scrolled .nav-link {
+  color: var(--text-primary) !important; /* Dark text when scrolled */
+}
+
+.navbar-partial .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-main); /* Accent color */
+  transition: width 0.3s ease;
+}
+
+.navbar-partial .nav-link:hover::after,
+.navbar-partial .nav-link.nav-active::after {
+  width: 100%;
+}
+
+.navbar-partial .nav-link:hover {
+  color: var(--primary-main) !important; /* Accent color on hover */
+}
+
+.navbar-partial .nav-link.nav-active {
+  color: var(--primary-main) !important; /* Accent color for active link */
+}
+
+/* Theme-aware icon button */
+.navbar-partial .MuiIconButton-root {
+  color: var(--text-primary);
+}
+
+[data-theme='light'] .navbar-partial:not(.scrolled) .MuiIconButton-root {
+  color: white;
+}
+
+[data-theme='light'] .navbar-partial:not(.scrolled) .btn {
+  border-color: white;
+  color: white;
+}
+
+[data-theme='light'] .navbar-partial:not(.scrolled) .btn:hover {
+  background-color: white;
+  color: var(--primary-main);
+}
+
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler-icon-light {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+.navbar-toggler-icon-dark {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.5)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+.navbar-partial .btn-outline-light {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.navbar-partial .btn-outline-light:hover {
+  background-color: var(--primary-main);
+  color: white;
+}
+
+.navbar-partial .btn-outline-dark {
+  border-color: var(--primary-main);
+  color: var(--primary-main);
+}
+
+.navbar-partial .btn-outline-dark:hover {
+  background-color: var(--primary-main);
+  color: white;
+}
+

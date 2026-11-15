@@ -1,0 +1,226 @@
+import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { format } from "date-fns";
+import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFacebookF,
+  faLinkedinIn,
+  faXTwitter,
+  faWhatsapp,
+} from "@fortawesome/free-brands-svg-icons";
+import {
+  faCalendarDays,
+  faEye,
+  faPerson,
+} from "@fortawesome/free-solid-svg-icons";
+
+import { getArticleBySlug, getRelatedArticles } from "../controllers";
+import { Loading, NoDataWidget, CommentSection } from "../components";
+import type { ArticleDetailModel, ArticleModel } from "../types/models";
+import { useThemeContext } from "../context/theme-context";
+import { API_DOMAIN } from "../constants/constant";
+import { BackToTopPartial } from "../partials";
+
+import "../../public/css/article-detail.css";
+
+export const ArticleDetailPage = () => {
+  const { t } = useTranslation();
+  const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
+
+  const { mode } = useThemeContext();
+  const [articleData, setArticleData] = useState<ArticleDetailModel | null>(
+    null
+  );
+  const [relatedArticles, setRelatedArticles] = useState<ArticleModel | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, [slug]);
+
+  useEffect(() => {
+    if (articleData) {
+      document.title = `${articleData.data.title} - PERIMATRIK`;
+    }
+  }, [articleData]);
+
+  const fetchData = async () => {
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const [articleResponse, relatedResponse] = await Promise.all([
+        getArticleBySlug(slug),
+        getRelatedArticles(slug),
+      ]);
+
+      if (!articleResponse) {
+        toast.error("Article not found");
+        navigate("/article");
+        return;
+      }
+
+      setArticleData(articleResponse);
+      setRelatedArticles(relatedResponse);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load article");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <Loading />;
+
+  if (!articleData) {
+    return (
+      <NoDataWidget
+        imageSrc="/images/empty-image.webp"
+        message="Article not found"
+      />
+    );
+  }
+
+  const { id, title, author, postingAt, views, image, body } = articleData.data;
+  
+  const shareUrl = `${API_DOMAIN}/share/article/${slug}`;
+
+
+  const shareButtonsNode = (className: string) => (
+    <div className={`card share-card mb-4 ${className}`}>
+      <div className="card-body text-center">
+        <h5 className="mb-3">{t('detail.shareArticle')}</h5>
+        <div className="share-buttons">
+          <a
+            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+              `*${title}*\n\nBaca selengkapnya di:\n${shareUrl}`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon icon={faWhatsapp} />
+          </a>
+          <a
+            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+              shareUrl
+            )}&text=${encodeURIComponent(title)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon icon={faXTwitter} />
+          </a>
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+              shareUrl
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon icon={faFacebookF} />
+          </a>
+          <a
+            href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+              shareUrl
+            )}&title=${encodeURIComponent(title)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon icon={faLinkedinIn} />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="article-detail-page" data-theme={mode}>
+      <div className="container">
+        <div className="row">
+          {/* ================= MAIN CONTENT ================= */}
+          <div className="col-lg-8">
+            {/* HEADER */}
+            <header className="article-header">
+              <h1 className="article-title">{title}</h1>
+
+              <div className="article-meta">
+                <span>
+                  <FontAwesomeIcon icon={faPerson} /> {author}
+                </span>
+                <span>
+                  <FontAwesomeIcon icon={faCalendarDays} />{" "}
+                  {format(new Date(postingAt), "MMMM dd, yyyy")}
+                </span>
+                <span>
+                  <FontAwesomeIcon icon={faEye} /> {views} views
+                </span>
+              </div>
+            </header>
+
+            {/* MOBILE SHARE */}
+            {shareButtonsNode("d-block d-lg-none")}
+
+            {/* HERO IMAGE – TANPA BINGKAI */}
+            <figure className="article-hero-image">
+              <img src={image} alt={title} />
+            </figure>
+
+            {/* CONTENT */}
+            <article
+              className="article-detail-content"
+              dangerouslySetInnerHTML={{ __html: body }}
+            />
+
+            {/* DISCUSSION SECTION */}
+            <CommentSection articleId={id} />
+          </div>
+
+          {/* ================= SIDEBAR ================= */}
+          <div className="col-lg-4">
+            <aside className="sidebar">
+              {/* SHARE */}
+              {shareButtonsNode("d-none d-lg-block")}
+
+              {/* RELATED */}
+              <div className="card related-card">
+                <div className="card-header">{t('detail.otherArticle')}</div>
+                <div className="card-body">
+                  {relatedArticles?.data?.length ? (
+                    relatedArticles.data.map((item, index) => (
+                      <Link
+                        to={`/article/detail/${item.slug}`}
+                        key={index}
+                        className="related-article"
+                      >
+                        <img src={item.image} alt={item.title} />
+                        <div>
+                          <h6>{item.title}</h6>
+                          <span>
+                            {format(new Date(item.postingAt), "MMM dd, yyyy")}
+                          </span>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <p className="text-muted small">
+                      No related articles found.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+      <BackToTopPartial />
+    </div>
+  );
+};
