@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 import {
   Box,
   Button,
-  Chip,
   CircularProgress,
+  IconButton,
   InputAdornment,
   Paper,
   Skeleton,
@@ -16,16 +16,23 @@ import {
   TablePagination,
   TableRow,
   TextField,
+  Tooltip,
   Typography,
-  alpha,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { CountBadge, PageHeader } from "./PageHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
   faPen,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+
+const visuallyHidden = {
+  // Explicit px: in MUI `sx`, numeric width/height <= 1 mean percentages.
+  border: 0, clip: "rect(0 0 0 0)", height: "1px", margin: "-1px", overflow: "hidden", padding: 0, position: "absolute", whiteSpace: "nowrap", width: "1px",
+} as const;
 
 const ButtonText = ({ children }: { children: ReactNode }) => (
   <Box
@@ -108,222 +115,204 @@ export const DashboardTable = <T extends { id: string | number }>({
   minWidth = 860,
 }: DashboardTableProps<T>) => {
   const theme = useTheme();
+  const isCompact = useMediaQuery(theme.breakpoints.down("md"));
   const colSpan = columns.length + (renderRowActions ? 1 : 0);
   const options = rowsPerPageOptions.includes(rowsPerPage)
     ? rowsPerPageOptions
     : [...rowsPerPageOptions, rowsPerPage].sort((a, b) => a - b);
+  const hasToolbar = Boolean(onSearchChange || filters);
 
   return (
-    <Paper
-      variant="outlined"
-      sx={{
-        overflow: "hidden",
-        borderRadius: 1,
-        borderColor: "divider",
-        bgcolor: "background.paper",
-        boxShadow: "0 12px 32px rgba(15, 23, 42, 0.06)",
-      }}
-    >
-      <Box
-        sx={{
-          p: { xs: 2, md: 2.5 },
-          borderBottom: "1px solid",
-          borderColor: "divider",
-          bgcolor: alpha(theme.palette.primary.main, 0.025),
-        }}
-      >
-        <Stack
-          direction={{ xs: "column", lg: "row" }}
-          spacing={2}
-          sx={{ alignItems: { xs: "stretch", lg: "center" }, justifyContent: "space-between" }}
-        >
-          <Box sx={{ minWidth: 0 }}>
-            <Stack direction="row" spacing={1.25} sx={{ alignItems: "center", mb: 0.5 }}>
-              <Typography variant="h6" sx={{ fontWeight: 900, lineHeight: 1.2 }}>
-                {title}
-              </Typography>
-              <Chip
-                label={`${totalCount} data`}
-                size="small"
-                sx={{
-                  height: 22,
-                  borderRadius: 1,
-                  fontWeight: 800,
-                  color: "primary.dark",
-                  bgcolor: alpha(theme.palette.primary.main, 0.1),
-                }}
-              />
-            </Stack>
-            {description && (
-              <Typography variant="body2" color="text.secondary">
-                {description}
-              </Typography>
-            )}
-          </Box>
+    <Stack spacing={3}>
+      <PageHeader
+        title={title}
+        description={description}
+        meta={<CountBadge>{totalCount} data</CountBadge>}
+        actions={actions.length > 0 ? actions.map((action) => (
+          <Button
+            key={action.label}
+            type="button"
+            variant={action.variant ?? "contained"}
+            color={action.color ?? "primary"}
+            disabled={action.disabled || action.loading}
+            onClick={action.onClick}
+            startIcon={action.loading ? <CircularProgress size={14} color="inherit" /> : action.icon}
+            sx={{ minWidth: 0, maxWidth: { sm: 220 }, "& .MuiButton-startIcon svg": { fontSize: 13 } }}
+          >
+            <ButtonText>{action.label}</ButtonText>
+          </Button>
+        )) : undefined}
+      />
 
+      <Paper
+        variant="outlined"
+        sx={{ overflow: "hidden", borderRadius: 3, borderColor: "divider", bgcolor: "background.paper", boxShadow: "0 1px 2px rgba(16, 24, 40, 0.04)" }}
+      >
+        {hasToolbar && (
           <Stack
             direction={{ xs: "column", sm: "row" }}
             spacing={1.25}
             sx={{
+              px: { xs: 2, md: 2.5 },
+              py: 2,
               alignItems: { xs: "stretch", sm: "center" },
-              minWidth: { lg: 520 },
-              width: { xs: "100%", lg: "auto" },
+              borderBottom: "1px solid",
+              borderColor: "divider",
               flexWrap: "wrap",
               rowGap: 1.25,
-              "& .MuiTextField-root": {
-                flex: { xs: "1 1 100%", sm: "1 1 220px" },
-                minWidth: 0,
-              },
-              "& .MuiFormControl-root": {
-                flexShrink: 0,
-              },
             }}
           >
             {onSearchChange && (
               <TextField
                 size="small"
-                fullWidth
                 value={searchValue}
                 placeholder={searchPlaceholder}
                 onChange={(event) => onSearchChange(event.target.value)}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 1,
-                    bgcolor: "background.paper",
+                sx={{ flex: { xs: "1 1 auto", sm: "0 1 360px" }, "& .MuiOutlinedInput-root": { bgcolor: "background.paper" } }}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start" sx={{ color: "text.disabled", fontSize: 14 }}>
+                        <FontAwesomeIcon icon={faMagnifyingGlass} />
+                      </InputAdornment>
+                    ),
                   },
+                  htmlInput: { "aria-label": searchPlaceholder },
                 }}
-                slotProps={{ input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FontAwesomeIcon icon={faMagnifyingGlass} />
-                    </InputAdornment>
-                  ),
-                } }}
               />
             )}
-
             {filters}
-
-            {actions.map((action) => (
-              <Button
-                key={action.label}
-                type="button"
-                variant={action.variant ?? "contained"}
-                color={action.color ?? "primary"}
-                disabled={action.disabled || action.loading}
-                onClick={action.onClick}
-                sx={{
-                  gap: 1,
-                  minWidth: 0,
-                  maxWidth: { xs: "100%", sm: 180 },
-                  flexShrink: 0,
-                  justifyContent: "center",
-                  px: 1.5,
-                }}
-              >
-                {action.loading ? (
-                  <CircularProgress size={16} color="inherit" />
-                ) : (
-                  action.icon
-                )}
-                <ButtonText>{action.label}</ButtonText>
-              </Button>
-            ))}
           </Stack>
-        </Stack>
-      </Box>
+        )}
 
-      <TableContainer sx={{ maxWidth: "100%" }}>
-        <Table size="small" sx={{ minWidth }}>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.key}
-                  align={column.align ?? "left"}
-                  sx={{ width: column.width, py: 1.6 }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-              {renderRowActions && (
-                <TableCell align="right" sx={{ width: 220, py: 1.6 }}>
-                  Aksi
-                </TableCell>
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
-              Array.from({ length: Math.min(rowsPerPage, 6) }).map((_, rowIndex) => (
-                <TableRow key={`loading-${rowIndex}`}>
-                  {Array.from({ length: colSpan }).map((__, cellIndex) => (
-                    <TableCell key={`${rowIndex}-${cellIndex}`} sx={{ py: 1.5 }}>
-                      <Skeleton height={24} />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : rows.length === 0 ? (
+        {isCompact ? (
+          // Small screens: stacked rows instead of a wide table (a wide table widens the mobile viewport).
+          loading ? (
+            <Stack spacing={2} sx={{ p: 2 }}>
+              {Array.from({ length: Math.min(rowsPerPage, 4) }).map((_, i) => <Skeleton key={i} variant="rounded" height={64} />)}
+            </Stack>
+          ) : rows.length === 0 ? (
+          <Box sx={{ py: 8, px: 2, textAlign: "center" }}>
+            <Box
+              sx={{
+                width: 48, height: 48, mx: "auto", mb: 2, borderRadius: 2.5, display: "grid", placeItems: "center",
+                color: "text.secondary", border: "1px solid", borderColor: "divider", bgcolor: "background.paper",
+                boxShadow: "0 1px 2px rgba(16, 24, 40, 0.05)",
+              }}
+            >
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </Box>
+            <Typography sx={{ fontSize: 16, fontWeight: 600 }}>{emptyTitle}</Typography>
+            <Typography sx={{ mt: 0.5, fontSize: 14, color: "text.secondary" }}>{emptyDescription}</Typography>
+          </Box>
+          ) : (
+            <Box component="ul" sx={{ listStyle: "none", m: 0, p: 0 }}>
+              {rows.map((row, index) => {
+                const [primary, ...rest] = columns;
+                return (
+                  <Box component="li" key={getRowId(row)} sx={{ px: 2, py: 1.75, "&:not(:last-child)": { borderBottom: "1px solid", borderColor: "divider" } }}>
+                    <Stack direction="row" spacing={1} sx={{ alignItems: "flex-start" }}>
+                      <Box sx={{ minWidth: 0, flexGrow: 1, fontSize: 14, color: "text.primary", "& *": { maxWidth: "100%" } }}>
+                        {primary.render ? primary.render(row, index) : String(row[primary.key as keyof T] ?? "-")}
+                      </Box>
+                      {renderRowActions && <Box sx={{ flexShrink: 0, mt: -0.5 }}>{renderRowActions(row, index)}</Box>}
+                    </Stack>
+                    {rest.length > 0 && (
+                      <Box component="dl" sx={{ m: 0, mt: 1.25, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: 1.25 }}>
+                        {rest.map((column) => (
+                          <Box key={column.key} sx={{ minWidth: 0 }}>
+                            <Box component="dt" sx={{ fontSize: 12, color: "text.disabled", fontWeight: 500 }}>{column.label}</Box>
+                            <Box component="dd" sx={{ m: 0, mt: 0.25, fontSize: 13, color: "text.secondary", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {column.render ? column.render(row, index) : String(row[column.key as keyof T] ?? "-")}
+                            </Box>
+                          </Box>
+                        ))}
+                      </Box>
+                    )}
+                  </Box>
+                );
+              })}
+            </Box>
+          )
+        ) : (
+        <TableContainer sx={{ maxWidth: "100%" }}>
+          <Table sx={{ minWidth }}>
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={colSpan} align="center" sx={{ py: 7 }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
-                    {emptyTitle}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    {emptyDescription}
-                  </Typography>
-                </TableCell>
+                {columns.map((column) => (
+                  <TableCell key={column.key} align={column.align ?? "left"} sx={{ width: column.width, py: 1.25, whiteSpace: "nowrap" }}>
+                    {column.label}
+                  </TableCell>
+                ))}
+                {renderRowActions && (
+                  <TableCell align="right" sx={{ width: 112, py: 1.25 }}>
+                    <Box component="span" sx={visuallyHidden}>Aksi</Box>
+                  </TableCell>
+                )}
               </TableRow>
-            ) : (
-              rows.map((row, index) => (
-                <TableRow
-                  key={getRowId(row)}
-                  hover
-                  sx={{
-                    "&:last-child td": {
-                      borderBottom: 0,
-                    },
-                  }}
-                >
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.key}
-                      align={column.align ?? "left"}
-                      sx={{ py: 1.35, verticalAlign: "middle" }}
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                Array.from({ length: Math.min(rowsPerPage, 6) }).map((_, rowIndex) => (
+                  <TableRow key={`loading-${rowIndex}`}>
+                    {Array.from({ length: colSpan }).map((__, cellIndex) => (
+                      <TableCell key={`${rowIndex}-${cellIndex}`} sx={{ py: 2 }}>
+                        <Skeleton height={20} sx={{ maxWidth: cellIndex === 0 ? 220 : 120 }} />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={colSpan} align="center" sx={{ py: 8, borderBottom: 0 }}>
+                    <Box
+                      sx={{
+                        width: 48, height: 48, mx: "auto", mb: 2, borderRadius: 2.5, display: "grid", placeItems: "center",
+                        color: "text.secondary", border: "1px solid", borderColor: "divider", bgcolor: "background.paper",
+                        boxShadow: "0 1px 2px rgba(16, 24, 40, 0.05)",
+                      }}
                     >
-                      {column.render ? column.render(row, index) : String(row[column.key as keyof T] ?? "-")}
-                    </TableCell>
-                  ))}
-                  {renderRowActions && (
-                    <TableCell
-                      align="right"
-                      sx={{ width: 220, py: 1.35, verticalAlign: "middle" }}
-                    >
-                      {renderRowActions(row, index)}
-                    </TableCell>
-                  )}
+                      <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    </Box>
+                    <Typography sx={{ fontSize: 16, fontWeight: 600 }}>{emptyTitle}</Typography>
+                    <Typography sx={{ mt: 0.5, fontSize: 14, color: "text.secondary" }}>{emptyDescription}</Typography>
+                  </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              ) : (
+                rows.map((row, index) => (
+                  <TableRow key={getRowId(row)} hover sx={{ "&:last-child td": { borderBottom: 0 } }}>
+                    {columns.map((column) => (
+                      <TableCell key={column.key} align={column.align ?? "left"} sx={{ py: 1.5, fontSize: 14, color: "text.secondary", verticalAlign: "middle" }}>
+                        {column.render ? column.render(row, index) : String(row[column.key as keyof T] ?? "-")}
+                      </TableCell>
+                    ))}
+                    {renderRowActions && (
+                      <TableCell align="right" sx={{ py: 1.5, verticalAlign: "middle" }}>
+                        {renderRowActions(row, index)}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        )}
 
-      <TablePagination
-        rowsPerPageOptions={options}
-        component="div"
-        count={totalCount}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(_, nextPage) => onPageChange(nextPage)}
-        onRowsPerPageChange={(event) => onRowsPerPageChange(Number(event.target.value))}
-        sx={{
-          borderTop: "1px solid",
-          borderColor: "divider",
-        }}
-      />
-    </Paper>
+        <TablePagination
+          rowsPerPageOptions={options}
+          component="div"
+          count={totalCount}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          labelRowsPerPage={isCompact ? "Baris" : "Baris per halaman"}
+          labelDisplayedRows={({ from, to, count }) => `${from}–${to} dari ${count}`}
+          onPageChange={(_, nextPage) => onPageChange(nextPage)}
+          onRowsPerPageChange={(event) => onRowsPerPageChange(Number(event.target.value))}
+          sx={{ borderTop: "1px solid", borderColor: "divider", color: "text.secondary", "& .MuiTablePagination-toolbar": { minHeight: 56 } }}
+        />
+      </Paper>
+    </Stack>
   );
 };
 
@@ -342,35 +331,36 @@ export const DashboardRowActions = ({
   deleting?: boolean;
   deleteDisabled?: boolean;
 }) => (
-  <Stack
-    direction="row"
-    spacing={1}
-    sx={{ justifyContent: "flex-end", alignItems: "center", flexWrap: "wrap", rowGap: 1, maxWidth: 220, ml: "auto" }}
-  >
-    <Button
-      type="button"
-      size="small"
-      variant="outlined"
-      onClick={onEdit}
-      sx={{ gap: 0.75, minWidth: 0, maxWidth: 96, px: 1 }}
-    >
-      <FontAwesomeIcon icon={faPen} />
-      <ButtonText>{editLabel}</ButtonText>
-    </Button>
-    <Button
-      type="button"
-      size="small"
-      variant="outlined"
-      color="error"
-      disabled={deleteDisabled || deleting}
-      onClick={onDelete}
-      sx={{ gap: 0.75, minWidth: 0, maxWidth: 108, px: 1 }}
-    >
-      {deleting ? <CircularProgress size={14} color="inherit" /> : <FontAwesomeIcon icon={faTrash} />}
-      <ButtonText>{deleteLabel}</ButtonText>
-    </Button>
+  <Stack direction="row" spacing={0.5} sx={{ justifyContent: "flex-end", alignItems: "center" }}>
+    <Tooltip title={editLabel}>
+      <IconButton aria-label={editLabel} size="small" onClick={onEdit} sx={rowActionSx}>
+        <FontAwesomeIcon icon={faPen} />
+      </IconButton>
+    </Tooltip>
+    <Tooltip title={deleteLabel}>
+      <span>
+        <IconButton
+          aria-label={deleteLabel}
+          size="small"
+          disabled={deleteDisabled || deleting}
+          onClick={onDelete}
+          sx={{ ...rowActionSx, "&:hover": { color: "error.main", bgcolor: "action.hover" } }}
+        >
+          {deleting ? <CircularProgress size={14} color="inherit" /> : <FontAwesomeIcon icon={faTrash} />}
+        </IconButton>
+      </span>
+    </Tooltip>
   </Stack>
 );
+
+const rowActionSx = {
+  width: 34,
+  height: 34,
+  fontSize: 14,
+  borderRadius: 2,
+  color: "text.secondary",
+  "&:hover": { color: "text.primary", bgcolor: "action.hover" },
+} as const;
 
 export const TableImage = ({
   src,
@@ -384,14 +374,15 @@ export const TableImage = ({
     src={src || "/images/empty-image.webp"}
     alt={alt}
     sx={{
-      width: 76,
-      height: 54,
+      width: 64,
+      height: 44,
+      flexShrink: 0,
       objectFit: "cover",
-      borderRadius: 1,
+      borderRadius: 1.5,
       display: "block",
       border: "1px solid",
       borderColor: "divider",
-      bgcolor: "grey.100",
+      bgcolor: "action.hover",
     }}
   />
 );

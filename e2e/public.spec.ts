@@ -17,7 +17,9 @@ for (const p of PAGES) {
     await expect(page.locator("footer").first()).toBeVisible();
 
     // No horizontal overflow (layout regressions after Grid v2 / sx migration).
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    // Compare against the device viewport: on mobile, overflowing content widens innerWidth itself.
+    const deviceWidth = page.viewportSize()!.width;
+    const overflow = (await page.evaluate(() => Math.max(document.documentElement.scrollWidth, window.innerWidth))) - deviceWidth;
     expect(overflow, "horizontal overflow in px").toBeLessThanOrEqual(1);
 
     await page.screenshot({ path: testInfo.outputPath(`${p.name}.png`), fullPage: true });

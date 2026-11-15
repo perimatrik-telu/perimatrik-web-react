@@ -4,9 +4,7 @@ import {
   Avatar,
   Box,
   Menu,
-  Button,
   ButtonBase,
-  Chip,
   MenuItem,
   ListItemIcon,
   ListItemText,
@@ -14,7 +12,7 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 
 import { IconChevronDown, IconUser, IconLogout } from "@tabler/icons-react";
 import { toast } from "react-toastify";
@@ -49,88 +47,40 @@ export const Profile = () => {
         aria-expanded={anchorEl2 ? "true" : undefined}
         onClick={handleClick2}
         sx={{
-          borderRadius: 1,
-          px: { xs: 0.75, sm: 1 },
-          py: 0.75,
+          borderRadius: 2,
+          pl: 0.5,
+          pr: { xs: 0.5, sm: 1 },
+          py: 0.5,
           gap: 1.25,
-          minHeight: 52,
-          border: "1px solid",
-          borderColor: anchorEl2
-            ? alpha(theme.palette.primary.main, 0.32)
-            : "rgba(255,255,255,0.08)",
-          bgcolor: anchorEl2
-            ? "#17222d"
-            : "#101820",
-          color: "common.white",
-          boxShadow: "0 10px 24px rgba(15, 23, 42, 0.16)",
-          transition:
-            "background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease",
-          "&:hover": {
-            bgcolor: "#17222d",
-            borderColor: alpha(theme.palette.primary.main, 0.42),
-            boxShadow: "0 12px 28px rgba(15, 23, 42, 0.2)",
-          },
+          color: "text.primary",
+          bgcolor: anchorEl2 ? "action.hover" : "transparent",
+          transition: "background-color 120ms ease",
+          "&:hover": { bgcolor: "action.hover" },
+          "&:focus-visible": { outline: `2px solid ${theme.palette.primary.main}`, outlineOffset: 2 },
         }}
       >
         <Avatar
           src={user.avatar || "/images/default-avatar.webp"}
           alt={user.name}
-          sx={{
-            width: 38,
-            height: 38,
-            fontWeight: 800,
-            bgcolor: "primary.main",
-            color: "primary.contrastText",
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.24)}`,
-          }}
+          sx={{ width: 34, height: 34, fontSize: 14, fontWeight: 600, bgcolor: "primary.main" }}
         >
           {user.name?.charAt(0)?.toUpperCase() ?? "U"}
         </Avatar>
 
-        <Box
-          sx={{
-            minWidth: 0,
-            textAlign: "left",
-            display: "block",
-          }}
-        >
-          <Typography
-            variant="body2"
-            noWrap
-            sx={{
-              fontWeight: 800,
-              color: "#ffffff",
-              lineHeight: 1.15,
-              maxWidth: { xs: 86, sm: 150 },
-            }}
-          >
+        <Box sx={{ minWidth: 0, textAlign: "left", display: { xs: "none", sm: "block" } }}>
+          <Typography noWrap sx={{ fontSize: 14, fontWeight: 600, lineHeight: 1.25, maxWidth: 160 }}>
             {user.name}
           </Typography>
-          <Chip
-            label={roleLabel}
-            size="small"
-            sx={{
-              display: { xs: "none", sm: "inline-flex" },
-              mt: 0.5,
-              height: 20,
-              borderRadius: 1,
-              fontSize: 11,
-              fontWeight: 800,
-              color: "#ffffff",
-              bgcolor: alpha(theme.palette.primary.main, 0.86),
-              border: `1px solid ${alpha(theme.palette.common.white, 0.16)}`,
-              "& .MuiChip-label": {
-                px: 0.75,
-              },
-            }}
-          />
+          <Typography noWrap sx={{ fontSize: 12, color: "text.secondary", lineHeight: 1.3 }}>
+            {roleLabel}
+          </Typography>
         </Box>
 
         <IconChevronDown
-          size={18}
+          size={16}
           stroke={2}
           style={{
-            color: "rgba(255,255,255,0.82)",
+            color: theme.palette.text.secondary,
             transform: anchorEl2 ? "rotate(180deg)" : "rotate(0deg)",
             transition: "transform 160ms ease",
           }}
@@ -148,29 +98,29 @@ export const Profile = () => {
           sx: {
             width: 280,
             mt: 1,
-            borderRadius: 1,
+            borderRadius: 2.5,
             border: "1px solid",
             borderColor: "divider",
             bgcolor: "background.paper",
             overflow: "hidden",
-            boxShadow: "0 18px 45px rgba(15, 23, 42, 0.14)",
+            boxShadow: "0 12px 24px -4px rgba(16,24,40,0.08), 0 4px 8px -2px rgba(16,24,40,0.04)",
           },
         } }}
       >
-        <Box sx={{ px: 2, py: 1.75, bgcolor: alpha(theme.palette.primary.main, 0.075) }}>
+        <Box sx={{ px: 2, py: 1.75 }}>
           <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
             <Avatar
               src={user.avatar || "/images/default-avatar.webp"}
               alt={user.name}
-              sx={{ width: 42, height: 42, bgcolor: "primary.main", fontWeight: 800 }}
+              sx={{ width: 40, height: 40, bgcolor: "primary.main", fontWeight: 600 }}
             >
               {user.name?.charAt(0)?.toUpperCase() ?? "U"}
             </Avatar>
             <Box sx={{ minWidth: 0 }}>
-              <Typography color="text.primary" noWrap sx={{ fontWeight: 800 }}>
+              <Typography color="text.primary" noWrap sx={{ fontWeight: 600, fontSize: 14 }}>
                 {user.name}
               </Typography>
-              <Typography variant="body2" color="text.secondary" noWrap>
+              <Typography color="text.secondary" noWrap sx={{ fontSize: 13 }}>
                 {user.email}
               </Typography>
             </Box>
@@ -179,28 +129,21 @@ export const Profile = () => {
 
         <Divider />
 
-        <MenuItem onClick={() => { handleClose2(); navigate("/dashboard/profile"); }}>
+        <MenuItem onClick={() => { handleClose2(); navigate("/dashboard/profile"); }} sx={{ mt: 0.5 }}>
           <ListItemIcon>
             <IconUser size={20} />
           </ListItemIcon>
           <ListItemText primary="Profil Saya" />
         </MenuItem>
 
-        <Divider sx={{ my: 1 }} />
+        <Divider sx={{ my: 0.5 }} />
 
-        {/* LOGOUT */}
-        <Box sx={{ px: 2, pb: 2 }}>
-          <Button
-            onClick={handleLogout}
-            variant="contained"
-            color="error"
-            fullWidth
-            startIcon={<IconLogout size={18} />}
-            sx={{ borderRadius: 1, py: 1 }}
-          >
-            Keluar
-          </Button>
-        </Box>
+        <MenuItem onClick={handleLogout} sx={{ color: "error.main", mb: 0.5 }}>
+          <ListItemIcon sx={{ color: "inherit" }}>
+            <IconLogout size={20} />
+          </ListItemIcon>
+          <ListItemText primary="Keluar" />
+        </MenuItem>
       </Menu>
     </Box>
   );

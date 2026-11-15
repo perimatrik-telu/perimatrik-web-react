@@ -43,7 +43,9 @@ test.describe("dashboard", () => {
         testInfo.annotations.push({ type: "role-redirect", description: `${route} -> ${finalPath}` });
       }
       await expect(page.locator("main, [role=main], #root > *").first()).toBeVisible();
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      // Compare against the device viewport: on mobile, overflowing content widens innerWidth itself.
+      const deviceWidth = page.viewportSize()!.width;
+      const overflow = (await page.evaluate(() => Math.max(document.documentElement.scrollWidth, window.innerWidth))) - deviceWidth;
       expect(overflow, "horizontal overflow in px").toBeLessThanOrEqual(1);
       await page.screenshot({ path: testInfo.outputPath(`${route.replace(/\//g, "_")}.png`), fullPage: true });
       expect(migrationWarnings(issues)).toEqual([]);

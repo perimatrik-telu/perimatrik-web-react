@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import {
-  alpha, Avatar, Box, Button, Card, CardContent, Chip, CircularProgress,
-  Grid, Stack, Typography,
-  useTheme,
+  alpha, Avatar, Box, Button, CircularProgress, Grid, Paper, Skeleton, Stack, Typography, useTheme,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
-  faArrowRight, faCog, faEye, faImages, faNewspaper,
-  faPlus, faShieldHalved, faUsers, faUserFriends, faBullhorn,
+  faArrowRight, faChevronRight, faImages, faNewspaper, faPlus, faUsers, faUserFriends, faBullhorn,
+  faUserShield, faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import type { AxiosResponse } from "axios";
@@ -17,13 +16,14 @@ import { getAllArticles } from "../controllers/article-controller";
 import { getAllGalleries } from "../controllers/gallery-controller";
 import { getAllNews } from "../controllers/news-controller";
 import api from "../api/api";
+import { PageHeader, StatusPill } from "../components/dashboard/PageHeader";
+import type { ArticleModel } from "../types/models";
 
 type CountMetaResponse = { meta?: { total?: number } };
 type AxiosListResponse = AxiosResponse<{ data?: unknown[] }>;
-type DashboardMetric = { title: string; value: number | string; icon: typeof faNewspaper; color: string; to: string; caption: string };
-type QuickAction = { name: string; icon: typeof faPlus; to: string; tone: string };
-
-const green = "#1f7a6b";
+type Metric = { title: string; value: number; icon: IconDefinition; to: string; caption: string };
+type QuickAction = { name: string; icon: IconDefinition; to: string };
+type RecentItem = ArticleModel["data"][number] & { status?: string; published_at?: string | null };
 
 const getMetaTotal = (result: PromiseSettledResult<CountMetaResponse | null>) =>
   result.status === "fulfilled" ? result.value?.meta?.total ?? 0 : 0;
@@ -31,245 +31,292 @@ const getMetaTotal = (result: PromiseSettledResult<CountMetaResponse | null>) =>
 const getAxiosDataLength = (result: PromiseSettledResult<AxiosListResponse | null>) =>
   result.status === "fulfilled" ? result.value?.data.data?.length ?? 0 : 0;
 
+const formatDate = (value?: string | null) =>
+  value ? new Date(value).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : "—";
+
+const cardSx = {
+  borderRadius: 3,
+  border: "1px solid",
+  borderColor: "divider",
+  bgcolor: "background.paper",
+  boxShadow: "0 1px 2px rgba(16, 24, 40, 0.04)",
+} as const;
+
+const SectionTitle = ({ title, action }: { title: string; action?: React.ReactNode }) => (
+  <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", px: 2.5, py: 2, borderBottom: "1px solid", borderColor: "divider" }}>
+    <Typography component="h2" sx={{ fontSize: 16, fontWeight: 600 }}>{title}</Typography>
+    {action}
+  </Stack>
+);
+
 const DashboardPage = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { user, isLoading: isUserLoading } = useAuth();
   const navigate = useNavigate();
-  const orange = theme.palette.mode === "dark" ? "#e67817" : "#b95608";
   const [counts, setCounts] = useState({ articles: 0, galleries: 0, angkatans: 0, members: 0, news: 0 });
   const [isCountsLoading, setIsCountsLoading] = useState(true);
+  const [recent, setRecent] = useState<RecentItem[]>([]);
+  const [isRecentLoading, setIsRecentLoading] = useState(true);
+
+  const canArticle = !!user && ["admin", "member"].includes(user.role);
+  const canNews = !!user && ["admin", "officer"].includes(user.role);
+  const canGallery = !!user && ["admin", "member", "officer"].includes(user.role);
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     if (!isUserLoading && !user) navigate("/login");
   }, [user, isUserLoading, navigate]);
 
   useEffect(() => {
+    if (!user) {
+      setIsCountsLoading(false);
+      setIsRecentLoading(false);
+      return;
+    }
+    const userIdFilter = user.role !== "admin" ? user.id : undefined;
+
     const fetchCounts = async () => {
-      if (!user) {
-        setIsCountsLoading(false);
-        return;
-      }
-
       setIsCountsLoading(true);
-      try {
-        const promises: [
-          Promise<CountMetaResponse | null>, Promise<CountMetaResponse | null>, Promise<CountMetaResponse | null>,
-          Promise<AxiosListResponse | null>, Promise<AxiosListResponse | null>,
-        ] = [Promise.resolve(null), Promise.resolve(null), Promise.resolve(null), Promise.resolve(null), Promise.resolve(null)];
-        const userIdFilter = user.role !== "admin" ? user.id : undefined;
+      const none = Promise.resolve(null);
+      const [articleRes, galleryRes, newsRes, angkatanRes, memberRes] = await Promise.allSettled([
+        canArticle ? getAllArticles({ page: 1, limit: 1, userId: userIdFilter }) : none,
+        canGallery ? getAllGalleries(1, 1, userIdFilter) : none,
+        canNews ? getAllNews(1, 1, userIdFilter) : none,
+        isAdmin ? api.get("/content/angkatan") : none,
+        isAdmin ? api.get("/content/member") : none,
+      ]);
+      setCounts({
+        articles: getMetaTotal(articleRes as PromiseSettledResult<CountMetaResponse | null>),
+        galleries: getMetaTotal(galleryRes as PromiseSettledResult<CountMetaResponse | null>),
+        news: getMetaTotal(newsRes as PromiseSettledResult<CountMetaResponse | null>),
+        angkatans: getAxiosDataLength(angkatanRes as PromiseSettledResult<AxiosListResponse | null>),
+        members: getAxiosDataLength(memberRes as PromiseSettledResult<AxiosListResponse | null>),
+      });
+      setIsCountsLoading(false);
+    };
 
-        if (["admin", "member"].includes(user.role)) {
-          promises[0] = getAllArticles({ page: 1, limit: 1, userId: userIdFilter });
-        }
-        if (["admin", "member", "officer"].includes(user.role)) {
-          promises[1] = getAllGalleries(1, 1, userIdFilter);
-        }
-        if (["admin", "officer"].includes(user.role)) {
-          promises[2] = getAllNews(1, 1, userIdFilter);
-        }
-        if (user.role === "admin") {
-          promises[3] = api.get("/content/angkatan");
-          promises[4] = api.get("/content/member");
-        }
-
-        const [articleRes, galleryRes, newsRes, angkatanRes, memberRes] = await Promise.allSettled(promises);
-        setCounts({
-          articles: getMetaTotal(articleRes),
-          galleries: getMetaTotal(galleryRes),
-          news: getMetaTotal(newsRes),
-          angkatans: getAxiosDataLength(angkatanRes),
-          members: getAxiosDataLength(memberRes),
-        });
-      } catch (error) {
-        console.error("Failed to fetch dashboard counts:", error);
-      } finally {
-        setIsCountsLoading(false);
-      }
+    const fetchRecent = async () => {
+      setIsRecentLoading(true);
+      const response = canArticle
+        ? await getAllArticles({ page: 1, limit: 5, userId: userIdFilter })
+        : canNews
+          ? await getAllNews(1, 5, userIdFilter)
+          : null;
+      setRecent((response?.data as RecentItem[] | undefined) ?? []);
+      setIsRecentLoading(false);
     };
 
     void fetchCounts();
-  }, [user]);
+    void fetchRecent();
+  }, [user, canArticle, canGallery, canNews, isAdmin]);
 
   if (isUserLoading) {
     return (
-      <Box role="status" aria-label={t("dashboard.loading")} sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Box role="status" aria-label={t("dashboard.loading")} sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
         <CircularProgress />
       </Box>
     );
   }
   if (!user) return null;
 
-  const contentSummary: DashboardMetric[] = [];
+  const metrics: Metric[] = [];
   const quickActions: QuickAction[] = [];
-  if (["admin", "member"].includes(user.role)) {
-    contentSummary.push({ title: t("article.title"), value: isCountsLoading ? "..." : counts.articles, icon: faNewspaper, color: orange, to: "/dashboard/article", caption: t("dashboard.captionArticle") });
-    quickActions.push({ name: t("dashboard.tambahArtikel"), icon: faPlus, to: "/dashboard/article/create", tone: orange });
+  if (canArticle) {
+    metrics.push({ title: t("article.title"), value: counts.articles, icon: faNewspaper, to: "/dashboard/article", caption: t("dashboard.captionArticle") });
+    quickActions.push({ name: t("dashboard.tambahArtikel"), icon: faPen, to: "/dashboard/article/create" });
   }
-  if (["admin", "officer"].includes(user.role)) {
-    contentSummary.push({ title: t("news.title"), value: isCountsLoading ? "..." : counts.news, icon: faBullhorn, color: orange, to: "/dashboard/news", caption: t("dashboard.captionNews") });
-    quickActions.push(
-      { name: t("dashboard.tambahBerita"), icon: faPlus, to: "/dashboard/news/create", tone: orange },
-      { name: t("dashboard.viewAllNews"), icon: faEye, to: "/dashboard/news", tone: green },
-    );
+  if (canNews) {
+    metrics.push({ title: t("news.title"), value: counts.news, icon: faBullhorn, to: "/dashboard/news", caption: t("dashboard.captionNews") });
+    quickActions.push({ name: t("dashboard.tambahBerita"), icon: faBullhorn, to: "/dashboard/news/create" });
   }
-  if (["admin", "member", "officer"].includes(user.role)) {
-    contentSummary.push({ title: t("gallery.title"), value: isCountsLoading ? "..." : counts.galleries, icon: faImages, color: green, to: "/dashboard/gallery", caption: t("dashboard.captionGallery") });
-    quickActions.push({ name: t("dashboard.tambahGaleri"), icon: faPlus, to: "/dashboard/gallery/create", tone: green });
+  if (canGallery) {
+    metrics.push({ title: t("gallery.title"), value: counts.galleries, icon: faImages, to: "/dashboard/gallery", caption: t("dashboard.captionGallery") });
+    quickActions.push({ name: t("dashboard.tambahGaleri"), icon: faImages, to: "/dashboard/gallery/create" });
   }
-  if (user.role === "admin") {
-    contentSummary.push(
-      { title: t("dashboard.titleAngkatan"), value: isCountsLoading ? "..." : counts.angkatans, icon: faUserFriends, color: green, to: "/dashboard/angkatan", caption: t("dashboard.captionAngkatan") },
-      { title: t("dashboard.titleAnggota"), value: isCountsLoading ? "..." : counts.members, icon: faUsers, color: green, to: "/dashboard/member", caption: t("dashboard.captionAnggota") },
-      { title: t("dashboard.titleSetting"), value: t("dashboard.manage"), icon: faCog, color: green, to: "/dashboard/setting/privacy/access", caption: t("dashboard.captionSetting") },
+  if (isAdmin) {
+    metrics.push(
+      { title: t("dashboard.titleAngkatan"), value: counts.angkatans, icon: faUserFriends, to: "/dashboard/angkatan", caption: t("dashboard.captionAngkatan") },
+      { title: t("dashboard.titleAnggota"), value: counts.members, icon: faUsers, to: "/dashboard/member", caption: t("dashboard.captionAnggota") },
     );
     quickActions.push(
-      { name: t("dashboard.addAngkatan"), icon: faPlus, to: "/dashboard/angkatan/create", tone: green },
-      { name: t("dashboard.addAnggota"), icon: faPlus, to: "/dashboard/member/create", tone: green },
+      { name: t("dashboard.addAnggota"), icon: faUsers, to: "/dashboard/member/create" },
+      { name: t("dashboard.titleSetting"), icon: faUserShield, to: "/dashboard/setting/privacy/access" },
     );
   }
 
-  const welcomeTitle = `${t("dashboard.hello")} ${user.name}`;
-  const roleLabel = {
-    admin: t("dashboard.roleAdmin"),
-    officer: t("dashboard.roleOfficer"),
-    member: t("dashboard.roleMember"),
-  }[user.role] ?? user.role;
+  const firstName = user.name.split(" ")[0];
+  const roleLabel = { admin: t("dashboard.roleAdmin"), officer: t("dashboard.roleOfficer"), member: t("dashboard.roleMember") }[user.role] ?? user.role;
   const primaryAction = quickActions[0];
-  const secondaryActions = primaryAction ? quickActions.slice(1) : quickActions;
+  const recentTitle = canArticle ? t("dashboard.recentArticles") : t("dashboard.recentNews");
+  const recentBase = canArticle ? "/dashboard/article" : "/dashboard/news";
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 }, maxWidth: 1600, mx: "auto" }}>
-      <Box sx={{ overflow: "hidden", border: "1px solid", borderColor: "divider", borderRadius: 2, bgcolor: "background.paper" }}>
-        <Grid container sx={{ alignItems: "stretch" }}>
-          <Grid size={{ xs: 12, md: 7.5 }}>
-            <Stack spacing={{ xs: 2.5, md: 3 }} sx={{ height: "100%", justifyContent: "center", p: { xs: 2.5, sm: 3.5, lg: 5 } }}>
-              <Stack direction="row" spacing={1.25} useFlexGap sx={{ alignItems: "center", flexWrap: "wrap" }}>
-                <Typography variant="overline" sx={{ color: orange, fontWeight: 800, letterSpacing: 0.4 }}>
-                  {t("dashboard.heroEyebrow")}
-                </Typography>
-                <Chip
-                  icon={<FontAwesomeIcon icon={faShieldHalved} />}
-                  label={roleLabel}
-                  size="small"
-                  sx={{ borderRadius: 1, fontWeight: 700, color: "text.primary", bgcolor: alpha(green, 0.1), "& .MuiChip-icon": { color: green, fontSize: 13 } }}
-                />
-              </Stack>
-              <Box>
-                <Typography component="h1" variant="h3" sx={{ fontWeight: 850, letterSpacing: "-0.025em", lineHeight: 1.15, mb: 1.5, fontSize: { xs: "2rem", sm: "2.5rem", lg: "3rem" } }}>
-                  {welcomeTitle}
-                </Typography>
-                <Typography color="text.secondary" sx={{ maxWidth: 540, lineHeight: 1.75 }}>
-                  {t("dashboard.heroDescription")}
-                </Typography>
-              </Box>
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={1.25}>
-                {primaryAction && (
-                  <Button component={Link} to={primaryAction.to} variant="contained" startIcon={<FontAwesomeIcon icon={primaryAction.icon} />} sx={{ alignSelf: { xs: "stretch", sm: "flex-start" }, minHeight: 46, px: 2.25, fontWeight: 700 }}>
-                    {primaryAction.name}
-                  </Button>
-                )}
-                <Button component={Link} to="/dashboard/profile" variant="outlined" color="inherit" sx={{ alignSelf: { xs: "stretch", sm: "flex-start" }, minHeight: 46, borderColor: "divider", bgcolor: "background.paper" }}>
-                  {t("dashboard.viewProfile")}
-                </Button>
-              </Stack>
-            </Stack>
-          </Grid>
-          <Grid sx={{ minHeight: { xs: 220, sm: 280, md: 360 } }} size={{ xs: 12, md: 4.5 }}>
-            <Box component="img" src="/images/hightlight/1.webp" alt="" aria-hidden="true" sx={{ width: "100%", height: "100%", minHeight: { xs: 220, sm: 280, md: 360 }, maxHeight: { md: 520 }, display: "block", objectFit: "cover", objectPosition: "center 48%" }} />
-          </Grid>
+    <Stack spacing={4}>
+      <PageHeader
+        title={t("dashboard.welcomeBack", { name: firstName })}
+        description={t("dashboard.heroDescription")}
+        actions={
+          <>
+            <Button component={Link} to="/dashboard/profile" variant="outlined" color="inherit" sx={{ borderColor: "divider", color: "text.primary" }}>
+              {t("dashboard.viewProfile")}
+            </Button>
+            {primaryAction && (
+              <Button component={Link} to={primaryAction.to} variant="contained" startIcon={<FontAwesomeIcon icon={faPlus} style={{ fontSize: 13 }} />}>
+                {primaryAction.name}
+              </Button>
+            )}
+          </>
+        }
+      />
+
+      {metrics.length > 0 && (
+        <Grid container spacing={2.5} component="section" aria-label={t("dashboard.summaryTitle")}>
+          {metrics.map((metric) => (
+            <Grid key={metric.to} size={{ xs: 12, sm: 6, lg: 12 / Math.min(Math.max(metrics.length, 2), 5) }}>
+              <Paper elevation={0} sx={{ ...cardSx, height: "100%", display: "flex", flexDirection: "column" }}>
+                <Box sx={{ p: 2.5, flexGrow: 1 }}>
+                  <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
+                    <Typography sx={{ fontSize: 14, fontWeight: 500, color: "text.secondary" }}>{metric.title}</Typography>
+                    <Box sx={{ width: 36, height: 36, borderRadius: 2, display: "grid", placeItems: "center", flexShrink: 0, fontSize: 15, color: "primary.main", bgcolor: alpha(theme.palette.primary.main, 0.1) }}>
+                      <FontAwesomeIcon icon={metric.icon} />
+                    </Box>
+                  </Stack>
+                  {isCountsLoading ? (
+                    <Skeleton width={64} height={44} />
+                  ) : (
+                    <Typography sx={{ fontSize: 30, fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.2, mt: 0.5 }}>
+                      {metric.value.toLocaleString("id-ID")}
+                    </Typography>
+                  )}
+                  <Typography sx={{ mt: 0.5, fontSize: 13, color: "text.secondary" }}>{metric.caption}</Typography>
+                </Box>
+                <Box
+                  component={Link}
+                  to={metric.to}
+                  sx={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between", px: 2.5, py: 1.5,
+                    borderTop: "1px solid", borderColor: "divider", fontSize: 14, fontWeight: 600, color: "text.primary", textDecoration: "none",
+                    "&:hover": { color: "primary.main" }, "&:hover svg": { transform: "translateX(2px)" },
+                    "& svg": { fontSize: 12, transition: "transform 120ms ease" },
+                  }}
+                >
+                  {t("dashboard.viewAll")}
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </Box>
+              </Paper>
+            </Grid>
+          ))}
         </Grid>
-      </Box>
+      )}
 
-      {contentSummary.length > 0 && (
-        <Box component="section" aria-labelledby="dashboard-summary-title">
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "flex-end" }, mb: 2 }}>
-            <Box>
-              <Typography id="dashboard-summary-title" component="h2" variant="h5" sx={{ fontWeight: 800, mb: 0.5 }}>
-                {t("dashboard.summaryTitle")}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("dashboard.summaryDescription")}
-              </Typography>
-            </Box>
-            <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: 700 }}>
-              {t("dashboard.activeModules", { count: contentSummary.length })}
-            </Typography>
-          </Stack>
-          <Grid container spacing={2}>
-            {contentSummary.map((item) => (
-              <Grid key={item.to} size={{ xs: 12, sm: 6, lg: 4 }}>
-                <Card
-                  component={Link}
-                  to={item.to}
-                  sx={{
-                    display: "block", height: "100%", borderRadius: 1.5,
-                    textDecoration: "none", boxShadow: "none",
-                    transition: "border-color 140ms ease, background-color 140ms ease",
-                    "&:hover": { borderColor: item.color, bgcolor: alpha(item.color, 0.035) },
-                    "&:focus-visible": { outline: `3px solid ${item.color}`, outlineOffset: 2 },
-                  }}
-                >
-                  <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
-                    <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-                      <Avatar sx={{ width: 48, height: 48, flex: "0 0 auto", color: item.color, bgcolor: alpha(item.color, 0.1), borderRadius: 1.5 }}>
-                        <FontAwesomeIcon icon={item.icon} />
-                      </Avatar>
-                      <Box sx={{ minWidth: 0, flexGrow: 1 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 700, mb: 0.25 }}>{item.title}</Typography>
-                        <Typography variant="h4" sx={{ fontWeight: 800, lineHeight: 1.1 }}>{item.value}</Typography>
-                        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>{item.caption}</Typography>
+      <Grid container spacing={2.5}>
+        {(canArticle || canNews) && (
+          <Grid size={{ xs: 12, lg: 8 }}>
+            <Paper elevation={0} sx={{ ...cardSx, height: "100%", overflow: "hidden" }}>
+              <SectionTitle
+                title={recentTitle}
+                action={
+                  <Button component={Link} to={recentBase} size="small" endIcon={<FontAwesomeIcon icon={faArrowRight} style={{ fontSize: 11 }} />}>
+                    {t("dashboard.viewAll")}
+                  </Button>
+                }
+              />
+              {isRecentLoading ? (
+                <Stack sx={{ p: 2.5 }} spacing={2}>
+                  {[0, 1, 2].map((i) => <Skeleton key={i} height={44} />)}
+                </Stack>
+              ) : recent.length === 0 ? (
+                <Box sx={{ px: 2.5, py: 6, textAlign: "center" }}>
+                  <Typography sx={{ fontSize: 14, color: "text.secondary" }}>{t("dashboard.recentEmpty")}</Typography>
+                </Box>
+              ) : (
+                <Box component="ul" sx={{ listStyle: "none", m: 0, p: 0 }}>
+                  {recent.map((item) => {
+                    const status = item.status ?? (item.published_at ? "active" : "draft");
+                    return (
+                      <Box component="li" key={item.id} sx={{ "&:not(:last-child)": { borderBottom: "1px solid", borderColor: "divider" } }}>
+                        <Box
+                          component={Link}
+                          to={`${recentBase}/edit/${item.id}`}
+                          sx={{ display: "flex", alignItems: "center", gap: 1.75, px: 2.5, py: 1.5, color: "inherit", textDecoration: "none", "&:hover": { bgcolor: "action.hover" } }}
+                        >
+                          <Box component="img" src={item.image || "/images/empty-image.webp"} alt="" sx={{ width: 48, height: 48, borderRadius: 2, objectFit: "cover", flexShrink: 0, bgcolor: "action.hover", border: "1px solid", borderColor: "divider" }} />
+                          <Box sx={{ minWidth: 0, flexGrow: 1 }}>
+                            <Typography noWrap sx={{ fontSize: 14, fontWeight: 600 }}>{item.title}</Typography>
+                            <Typography noWrap sx={{ fontSize: 13, color: "text.secondary" }}>
+                              {item.author || "—"} · {formatDate(item.published_at ?? item.postingAt)}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                            {status === "active" ? (
+                              <StatusPill tone="success">{t("dashboard.statusActive")}</StatusPill>
+                            ) : status === "inactive" ? (
+                              <StatusPill tone="warning">{t("dashboard.statusInactive")}</StatusPill>
+                            ) : (
+                              <StatusPill>{t("dashboard.statusDraft")}</StatusPill>
+                            )}
+                          </Box>
+                          <Box sx={{ color: "text.disabled", fontSize: 12 }}><FontAwesomeIcon icon={faChevronRight} /></Box>
+                        </Box>
                       </Box>
-                      <FontAwesomeIcon icon={faArrowRight} color={item.color} aria-hidden="true" />
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+                    );
+                  })}
+                </Box>
+              )}
+            </Paper>
           </Grid>
-        </Box>
-      )}
+        )}
 
-      {secondaryActions.length > 0 && (
-        <Box component="section" aria-labelledby="dashboard-actions-title">
-          <Box sx={{ mb: 2 }}>
-            <Typography id="dashboard-actions-title" component="h2" variant="h5" sx={{ fontWeight: 800, mb: 0.5 }}>
-              {t("dashboard.quickActions")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t("dashboard.quickActionsDescription")}
-            </Typography>
-          </Box>
-          <Grid container spacing={1.5}>
-            {secondaryActions.map((action) => (
-              <Grid key={action.to} size={{ xs: 12, sm: 6, lg: 4 }}>
-                <Button
-                  component={Link}
-                  to={action.to}
-                  variant="outlined"
-                  color="inherit"
-                  fullWidth
-                  startIcon={<FontAwesomeIcon icon={action.icon} />}
-                  endIcon={<FontAwesomeIcon icon={faArrowRight} />}
-                  sx={{
-                    minHeight: 56, justifyContent: "space-between", borderRadius: 1.5,
-                    px: 2, textAlign: "left", color: "text.primary",
-                    bgcolor: "background.paper", borderColor: "divider",
-                    "& .MuiButton-startIcon": { color: action.tone },
-                    "&:hover": { bgcolor: alpha(action.tone, 0.04), borderColor: action.tone },
-                    "&:focus-visible": { outline: `3px solid ${action.tone}`, outlineOffset: 2 },
-                  }}
-                >
-                  <Typography component="span" variant="body2" sx={{ fontWeight: 700, flexGrow: 1, textAlign: "left" }}>
-                    {action.name}
-                  </Typography>
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      )}
-    </Box>
+        <Grid size={{ xs: 12, lg: canArticle || canNews ? 4 : 12 }}>
+          <Stack spacing={2.5} sx={{ height: "100%" }}>
+            <Paper elevation={0} sx={{ ...cardSx, p: 2.5 }}>
+              <Typography component="h2" sx={{ fontSize: 16, fontWeight: 600, mb: 2 }}>{t("dashboard.account")}</Typography>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
+                <Avatar src={user.avatar || "/images/default-avatar.webp"} alt={user.name} sx={{ width: 48, height: 48 }} />
+                <Box sx={{ minWidth: 0, flexGrow: 1 }}>
+                  <Typography noWrap sx={{ fontSize: 15, fontWeight: 600 }}>{user.name}</Typography>
+                  <Typography noWrap sx={{ fontSize: 13, color: "text.secondary" }}>{user.email}</Typography>
+                </Box>
+              </Stack>
+              <Stack direction="row" sx={{ mt: 2, pt: 2, borderTop: "1px solid", borderColor: "divider", justifyContent: "space-between", alignItems: "center" }}>
+                <Typography sx={{ fontSize: 13, color: "text.secondary" }}>{t("dashboard.statusLabel")}</Typography>
+                <StatusPill tone="success">{roleLabel}</StatusPill>
+              </Stack>
+            </Paper>
+
+            {quickActions.length > 0 && (
+              <Paper elevation={0} sx={{ ...cardSx, overflow: "hidden", flexGrow: 1 }}>
+                <SectionTitle title={t("dashboard.quickActions")} />
+                <Box component="ul" sx={{ listStyle: "none", m: 0, p: 1 }}>
+                  {quickActions.map((action) => (
+                    <li key={action.to}>
+                      <Box
+                        component={Link}
+                        to={action.to}
+                        sx={{
+                          display: "flex", alignItems: "center", gap: 1.5, px: 1.5, py: 1.25, borderRadius: 2,
+                          color: "text.primary", textDecoration: "none", fontSize: 14, fontWeight: 500,
+                          "&:hover": { bgcolor: "action.hover" }, "&:hover .qa-chevron": { color: "text.secondary", transform: "translateX(2px)" },
+                        }}
+                      >
+                        <Box sx={{ width: 32, height: 32, borderRadius: 2, display: "grid", placeItems: "center", fontSize: 13, color: "text.secondary", border: "1px solid", borderColor: "divider" }}>
+                          <FontAwesomeIcon icon={action.icon} />
+                        </Box>
+                        <Box component="span" sx={{ flexGrow: 1 }}>{action.name}</Box>
+                        <Box className="qa-chevron" sx={{ color: "text.disabled", fontSize: 11, transition: "transform 120ms ease, color 120ms ease" }}>
+                          <FontAwesomeIcon icon={faChevronRight} />
+                        </Box>
+                      </Box>
+                    </li>
+                  ))}
+                </Box>
+              </Paper>
+            )}
+          </Stack>
+        </Grid>
+      </Grid>
+    </Stack>
   );
 };
 

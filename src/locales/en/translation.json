@@ -214,7 +214,19 @@
     "summaryTitle": "Content overview",
     "summaryDescription": "See the content and records available to you.",
     "activeModules": "{{count}} active modules",
-    "quickActionsDescription": "More shortcuts for your work."
+    "quickActionsDescription": "More shortcuts for your work.",
+    "welcomeBack": "Welcome back, {{name}}",
+    "recentArticles": "Recent articles",
+    "recentNews": "Recent news",
+    "recentEmpty": "No content yet. Start by creating the first one.",
+    "viewAll": "View all",
+    "account": "Your account",
+    "memberNo": "Member no.",
+    "statusLabel": "Status",
+    "statusActive": "Published",
+    "statusDraft": "Draft",
+    "statusInactive": "Inactive",
+    "openWebsite": "Open public website"
   },
   "crud": {
     "simpan": "Save",

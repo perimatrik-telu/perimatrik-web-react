@@ -214,7 +214,19 @@
     "summaryTitle": "Ringkasan konten",
     "summaryDescription": "Lihat konten dan data yang dapat Anda kelola.",
     "activeModules": "{{count}} modul aktif",
-    "quickActionsDescription": "Pintasan lain untuk pekerjaan Anda."
+    "quickActionsDescription": "Pintasan lain untuk pekerjaan Anda.",
+    "welcomeBack": "Selamat datang, {{name}}",
+    "recentArticles": "Artikel terbaru",
+    "recentNews": "Berita terbaru",
+    "recentEmpty": "Belum ada konten. Mulai dengan membuat yang pertama.",
+    "viewAll": "Lihat semua",
+    "account": "Akun Anda",
+    "memberNo": "No. anggota",
+    "statusLabel": "Status",
+    "statusActive": "Terbit",
+    "statusDraft": "Draft",
+    "statusInactive": "Nonaktif",
+    "openWebsite": "Buka website publik"
   },
   "crud": {
     "simpan": "Simpan",
