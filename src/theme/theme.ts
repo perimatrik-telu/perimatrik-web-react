@@ -11,16 +11,26 @@ const brand = {
   contrastText: '#ffffff',
 };
 
+/**
+ * Dashboard brand: white text on #e67817 is only 2.97:1 (fails WCAG AA), so the light dashboard uses
+ * the deeper #b95608 (4.78:1) as primary. Dark mode keeps #e67817 (6.1:1 on the dark surface) with dark
+ * text on filled buttons.
+ */
+const dashboardBrand = {
+  light: { main: '#b95608', dark: '#9a4706', light: '#e67817', contrastText: '#ffffff' },
+  dark: { main: '#e67817', dark: '#b95608', light: '#f6a554', contrastText: '#101828' },
+};
+
 const fontFamily = ['Inter', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(',');
 
-const shared = (mode: 'light' | 'dark'): ThemeOptions => {
+const shared = (mode: 'light' | 'dark', radiusUnit: number, variant: 'site' | 'dashboard' = 'site'): ThemeOptions => {
   const light = mode === 'light';
   const border = light ? '#eaecf0' : 'rgba(255, 255, 255, 0.08)';
 
   return {
     palette: {
       mode,
-      primary: brand,
+      primary: variant === 'dashboard' ? dashboardBrand[mode] : brand,
       secondary: { main: '#1f7a6b' },
       success: { main: light ? '#079455' : '#47cd89' },
       warning: { main: light ? '#dc6803' : '#fdb022' },
@@ -38,7 +48,7 @@ const shared = (mode: 'light' | 'dark'): ThemeOptions => {
         grey: { 50: '#f9fafb', 100: '#f2f4f7', 200: '#eaecf0', 300: '#d0d5dd', 400: '#98a2b3', 500: '#667085', 600: '#475467', 700: '#344054', 800: '#182230', 900: '#101828' },
       }),
     },
-    shape: { borderRadius: 10 },
+    shape: { borderRadius: radiusUnit },
     typography: {
       fontFamily,
       h1: { fontWeight: 700, letterSpacing: '-0.02em' },
@@ -98,5 +108,16 @@ const shared = (mode: 'light' | 'dark'): ThemeOptions => {
   };
 };
 
-export const lightTheme = createTheme(shared('light'));
-export const darkTheme = createTheme(shared('dark'));
+/**
+ * Public site: radius unit 8 (unchanged from before the redesign, so `sx={{ borderRadius: n }}`
+ * on public pages keeps its size).
+ */
+export const lightTheme = createTheme(shared('light', 8));
+export const darkTheme = createTheme(shared('dark', 8));
+
+/**
+ * Dashboard: radius unit 4, so `borderRadius: 2` = 8px, `2.5` = 10px, `3` = 12px.
+ * Components with explicit radii (buttons, inputs) are unaffected.
+ */
+export const dashboardLightTheme = createTheme(shared('light', 4, 'dashboard'));
+export const dashboardDarkTheme = createTheme(shared('dark', 4, 'dashboard'));

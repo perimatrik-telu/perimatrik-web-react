@@ -7,6 +7,8 @@ import { Alert, Box, Typography, Button, CircularProgress, Stack } from "@mui/ma
 import { useAuth } from "../../hooks/useAuth";
 import { useArticleImage } from "../../hooks/useArticleImage";
 import { ArticleForm } from "../../components/dashboard/ArticleForm";
+import { PageHeader } from "../../components/dashboard/PageHeader";
+import { SectionCard } from "../../components/dashboard/SectionCard";
 import type { ArticleDetailModel } from "../../types/models";
 
 type ArticleStatus = "draft" | "active" | "inactive";
@@ -63,26 +65,29 @@ export const EditArticlePage = () => {
 
   if (!user || (user.role !== "admin" && user.role !== "member")) {
     return (
-      <Box sx={{ p: 3, textAlign: "center" }}>
-        <Typography variant="h4" color="error">{t("form.aksesDitolak")}</Typography>
+      <Box sx={{ py: 8, textAlign: "center" }}>
+        <Typography component="h1" sx={{ fontSize: 20, fontWeight: 600, color: "error.main" }}>{t("form.aksesDitolak")}</Typography>
         <Button sx={{ mt: 3 }} variant="contained" onClick={() => navigate("/")}>{t("form.kembaliBeranda")}</Button>
       </Box>
     );
   }
 
   if (loading) {
-    return <Stack role="status" spacing={2} sx={{ alignItems: "center", py: 8 }}><CircularProgress /><Typography>{t("articleForm.loading")}</Typography></Stack>;
+    return <Stack role="status" spacing={1.5} sx={{ alignItems: "center", py: 10 }}><CircularProgress size={28} /><Typography sx={{ fontSize: 14, color: "text.secondary" }}>{t("articleForm.loading")}</Typography></Stack>;
   }
 
   if (!articleData || loadError) {
     return (
-      <Box sx={{ maxWidth: 640, mx: "auto", py: 5 }}>
-        <Alert severity={loadError ? "error" : "info"}>{t(loadError ? "articleForm.loadError" : "articleForm.notFound")}</Alert>
-        <Stack direction="row" sx={{ gap: 2, mt: 3 }}>
-          <Button variant="outlined" color="inherit" onClick={() => navigate("/dashboard/article")}>{t("articleForm.back")}</Button>
-          {loadError && <Button variant="contained" onClick={() => setRetry((value) => value + 1)}>{t("articleForm.retry")}</Button>}
-        </Stack>
-      </Box>
+      <Stack spacing={3}>
+        <PageHeader title={t("articleForm.editTitle")} />
+        <SectionCard>
+          <Alert severity={loadError ? "error" : "info"}>{t(loadError ? "articleForm.loadError" : "articleForm.notFound")}</Alert>
+          <Stack direction="row" sx={{ gap: 1.25, mt: 2.5, flexWrap: "wrap" }}>
+            <Button variant="outlined" color="inherit" sx={{ borderColor: "divider" }} onClick={() => navigate("/dashboard/article")}>{t("articleForm.back")}</Button>
+            {loadError && <Button variant="contained" onClick={() => setRetry((value) => value + 1)}>{t("articleForm.retry")}</Button>}
+          </Stack>
+        </SectionCard>
+      </Stack>
     );
   }
 

@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
-import { lightTheme, darkTheme } from '../theme/theme';
+import { lightTheme, darkTheme, dashboardLightTheme, dashboardDarkTheme } from '../theme/theme';
 import { ThemeContext, type ThemePreference } from './theme-context';
 
-export const ThemeProvider: React.FC<{children: React.ReactNode, forcedMode?: 'light' | 'dark'}> = ({ children, forcedMode }) => {
+export const ThemeProvider: React.FC<{children: React.ReactNode, forcedMode?: 'light' | 'dark', variant?: 'site' | 'dashboard'}> = ({ children, forcedMode, variant = 'site' }) => {
   const [themePreference, setThemePreference] = useState<ThemePreference>(() => {
     const savedPreference = localStorage.getItem('themePreference') as ThemePreference | null;
     return savedPreference || 'system';
@@ -30,7 +30,10 @@ export const ThemeProvider: React.FC<{children: React.ReactNode, forcedMode?: 'l
     return themePreference;
   }, [themePreference, forcedMode]);
 
-  const theme = useMemo(() => (mode === 'light' ? lightTheme : darkTheme), [mode]);
+  const theme = useMemo(() => {
+    if (variant === 'dashboard') return mode === 'light' ? dashboardLightTheme : dashboardDarkTheme;
+    return mode === 'light' ? lightTheme : darkTheme;
+  }, [mode, variant]);
 
   return (
     <ThemeContext.Provider value={{ toggleTheme, mode, themePreference }}>

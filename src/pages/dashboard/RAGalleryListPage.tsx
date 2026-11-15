@@ -1,12 +1,9 @@
-import { Typography } from "@mui/material";
 import {
   deleteGallery,
   getAllGalleries,
 } from "../../controllers/gallery-controller";
-import {
-  TableImage,
-  type DashboardTableColumn,
-} from "../../components/dashboard/DashboardTable";
+import type { DashboardTableColumn } from "../../components/dashboard/DashboardTable";
+import { MediaTitleCell } from "./contentColumns";
 import { ContentTablePage } from "./ContentTablePage";
 
 type GalleryRow = {
@@ -16,27 +13,19 @@ type GalleryRow = {
   user?: { name?: string } | null;
 };
 
+const captionOf = (row: GalleryRow) => (!row.caption || row.caption === "null" ? "Tanpa keterangan" : row.caption);
+
 const galleryColumns: DashboardTableColumn<GalleryRow>[] = [
   {
-    key: "image_url",
-    label: "Gambar",
-    width: 104,
-    render: (row) => <TableImage src={row.image_url} alt={row.caption || "Gallery"} />,
-  },
-  {
     key: "caption",
-    label: "Keterangan",
-    render: (row) => (
-      <Typography variant="body2" sx={{ fontWeight: 800, maxWidth: 440 }} noWrap>
-        {(!row.caption || row.caption === "null") ? "-" : row.caption}
-      </Typography>
-    ),
+    label: "Foto",
+    render: (row) => <MediaTitleCell image={row.image_url} title={captionOf(row)} />,
   },
   {
     key: "user",
-    label: "Pengguna",
-    width: 220,
-    render: (row) => row.user?.name || "-",
+    label: "Diunggah oleh",
+    width: 240,
+    render: (row) => row.user?.name || "—",
   },
 ];
 
@@ -72,7 +61,7 @@ export const RAGalleryListPage = () => (
     columns={galleryColumns}
     fetchRows={fetchGalleryRows}
     deleteRow={deleteGalleryRow}
-    searchPlaceholder="Cari galeri di halaman ini..."
+    searchPlaceholder="Cari keterangan atau pengunggah…"
     filterRow={filterGallery}
     emptyTitle="Galeri tidak ditemukan"
     forceUserFilter={true}

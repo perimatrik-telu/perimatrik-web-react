@@ -1,7 +1,6 @@
-import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Avatar, Box, Button, CircularProgress, Stack, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
@@ -13,6 +12,7 @@ import {
 import api from "../../api/api";
 import { useAuth } from "../../hooks/useAuth";
 import { MAIN_URL } from "../../constants/constant";
+import { useConfirm } from "../../components/dashboard/confirm-context";
 
 interface Angkatan {
   id: string;
@@ -31,32 +31,74 @@ interface Member {
   angkatan?: Angkatan | null;
 }
 
+const memberInitial = (name?: string) => (name?.trim().charAt(0) || "?").toUpperCase();
+
 const columns: DashboardTableColumn<Member>[] = [
-  { key: "no_anggota", label: "No. Anggota", width: 150 },
   {
     key: "nama_lengkap",
-    label: "Nama Lengkap",
+    label: "Anggota",
     render: (row) => (
-      <Typography variant="body2" sx={{ fontWeight: 800, maxWidth: 240 }} noWrap>
-        {row.nama_lengkap}
-      </Typography>
+      <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", minWidth: 0 }}>
+        <Avatar
+          src={row.avatar || undefined}
+          alt=""
+          sx={{ width: 36, height: 36, fontSize: 14, fontWeight: 600, bgcolor: "action.selected", color: "text.secondary" }}
+        >
+          {memberInitial(row.nama_lengkap)}
+        </Avatar>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography noWrap sx={{ fontSize: 14, fontWeight: 600, color: "text.primary", maxWidth: 280 }}>
+            {row.nama_lengkap}
+          </Typography>
+          <Typography noWrap sx={{ fontSize: 13, color: "text.secondary", fontVariantNumeric: "tabular-nums" }}>
+            {row.no_anggota || "—"}
+          </Typography>
+        </Box>
+      </Stack>
     ),
   },
-  { key: "nama_lapangan", label: "Nama Lapangan", width: 180 },
+  {
+    key: "nama_lapangan",
+    label: "Nama lapangan",
+    width: 170,
+    render: (row) => row.nama_lapangan || "—",
+  },
   {
     key: "angkatan",
     label: "Angkatan",
     width: 180,
-    render: (row) => row.angkatan?.nama_angkatan || "-",
+    render: (row) =>
+      row.angkatan ? (
+        <Box sx={{ minWidth: 0 }}>
+          <Typography noWrap sx={{ fontSize: 14, color: "text.primary" }}>{row.angkatan.nama_angkatan}</Typography>
+          {row.angkatan.year && (
+            <Typography noWrap sx={{ fontSize: 13, color: "text.secondary" }}>{row.angkatan.year}</Typography>
+          )}
+        </Box>
+      ) : (
+        "—"
+      ),
   },
-  { key: "domisili", label: "Domisili", width: 180 },
-  { key: "kontak", label: "Kontak", width: 160 },
+  {
+    key: "domisili",
+    label: "Domisili",
+    width: 170,
+    render: (row) => row.domisili || "—",
+  },
+  {
+    key: "kontak",
+    label: "Kontak",
+    width: 160,
+    render: (row) => (
+      <Box component="span" sx={{ fontVariantNumeric: "tabular-nums" }}>{row.kontak || "—"}</Box>
+    ),
+  },
 ];
 
 const MemberListManagePage = () => {
-  const { t } = useTranslation();
   const { user, token, isLoading: userLoading } = useAuth();
   const navigate = useNavigate();
+  const confirm = useConfirm();
 
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,7 +162,7 @@ const MemberListManagePage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Hapus anggota ini?")) {
+    if (!(await confirm({ title: "Hapus anggota ini?", description: "Data anggota akan dihapus dan tidak dapat dikembalikan." }))) {
       return;
     }
 
@@ -173,10 +215,10 @@ const MemberListManagePage = () => {
   if (!user || user.role !== "admin") {
     return (
       <Box sx={{ textAlign: "center", mt: 6 }}>
-        <Typography variant="h4" color="error">
+        <Typography component="h1" sx={{ fontSize: 20, fontWeight: 600, color: "text.primary" }}>
           Akses Ditolak
         </Typography>
-        <Button sx={{ mt: 3 }} variant="contained" onClick={() => navigate("/")}>
+        <Button sx={{ mt: 2.5 }} variant="contained" onClick={() => navigate("/")}>
           Kembali ke Beranda
         </Button>
       </Box>
@@ -205,6 +247,7 @@ const MemberListManagePage = () => {
           onClick: () => handleExport("csv"),
           icon: <FontAwesomeIcon icon={faDownload} />,
           variant: "outlined",
+          color: "inherit",
           loading: exportFormatLoading === "csv",
           disabled: exportFormatLoading !== null,
         },
@@ -213,6 +256,7 @@ const MemberListManagePage = () => {
           onClick: () => handleExport("xlsx"),
           icon: <FontAwesomeIcon icon={faDownload} />,
           variant: "outlined",
+          color: "inherit",
           loading: exportFormatLoading === "xlsx",
           disabled: exportFormatLoading !== null,
         },
@@ -223,7 +267,7 @@ const MemberListManagePage = () => {
         },
       ]}
       emptyTitle="Anggota tidak ditemukan"
-      minWidth={1120}
+      minWidth={980}
       onPageChange={setPage}
       onRowsPerPageChange={(value) => {
         setRowsPerPage(value);

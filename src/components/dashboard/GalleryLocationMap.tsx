@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Box, CircularProgress, Typography } from "@mui/material";
+import { Alert, Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import Map, { Marker, useControl, NavigationControl, GeolocateControl } from "react-map-gl/mapbox";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -42,6 +42,7 @@ type GalleryLocationMapProps = {
 
 export default function GalleryLocationMap({ position, onSelect }: GalleryLocationMapProps) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(!mapboxToken);
 
@@ -49,9 +50,9 @@ export default function GalleryLocationMap({ position, onSelect }: GalleryLocati
     <Box>
       {failed && <Alert severity="warning" sx={{ mb: 2 }}>{t("galleryForm.mapUnavailable")}</Alert>}
       {!failed && (
-        <Box sx={{ height: { xs: 300, sm: 360 }, position: "relative", borderRadius: 1, border: "1px solid", borderColor: "text.secondary", overflow: "hidden" }}>
-          {!loaded && <Box role="status" sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 2, bgcolor: "background.default", zIndex: 1 }}>
-            <CircularProgress size={24} /><Typography variant="body2">{t("galleryForm.mapLoading")}</Typography>
+        <Box sx={{ height: { xs: 300, sm: 360 }, position: "relative", borderRadius: "8px", border: "1px solid", borderColor: "divider", overflow: "hidden" }}>
+          {!loaded && <Box role="status" sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 1.5, bgcolor: "background.paper", zIndex: 1 }}>
+            <CircularProgress size={20} /><Typography sx={{ fontSize: 14, color: "text.secondary" }}>{t("galleryForm.mapLoading")}</Typography>
           </Box>}
           <Map
             initialViewState={{ longitude: position?.[1] ?? 106.8456, latitude: position?.[0] ?? -6.2088, zoom: position ? 13 : 11 }}
@@ -64,7 +65,7 @@ export default function GalleryLocationMap({ position, onSelect }: GalleryLocati
             <GeocoderControl onSelect={onSelect} />
             <NavigationControl position="bottom-right" />
             <GeolocateControl position="bottom-right" />
-            {position && <Marker latitude={position[0]} longitude={position[1]} color="#b95608" />}
+            {position && <Marker latitude={position[0]} longitude={position[1]} color={theme.palette.primary.main} />}
           </Map>
         </Box>
       )}

@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
@@ -8,20 +8,19 @@ import {
   Button,
   CircularProgress,
   MenuItem,
-  Paper,
-  FormLabel,
   Alert,
   Grid,
-  Divider,
   Avatar,
+  Stack,
 } from "@mui/material";
-import { Stack } from "@mui/system";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
 import api from "../../api/api";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { User } from "../../types/models";
+import { PageHeader } from "../../components/dashboard/PageHeader";
+import { FieldLabel, SectionCard } from "../../components/dashboard/SectionCard";
 
 interface Angkatan {
   id: string;
@@ -203,6 +202,15 @@ const MemberFormPage = () => {
     }
   };
 
+  // Object URL for the newly picked photo: created once per file and revoked when replaced/unmounted.
+  const avatarObjectUrl = useMemo(
+    () => (formData.avatar ? URL.createObjectURL(formData.avatar) : null),
+    [formData.avatar],
+  );
+  useEffect(() => () => {
+    if (avatarObjectUrl) URL.revokeObjectURL(avatarObjectUrl);
+  }, [avatarObjectUrl]);
+
   if (userLoading || loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
@@ -214,58 +222,66 @@ const MemberFormPage = () => {
   if (!user || user.role !== "admin") {
     return (
       <Box sx={{ textAlign: "center", mt: 6 }}>
-        <Typography variant="h4" color="error">{t("form.aksesDitolak")}</Typography>
-        <Button sx={{ mt: 3 }} variant="contained" onClick={() => navigate("/")}>{t("form.kembaliBeranda")}</Button>
+        <Typography component="h1" sx={{ fontSize: 20, fontWeight: 600, color: "text.primary" }}>{t("form.aksesDitolak")}</Typography>
+        <Button sx={{ mt: 2.5 }} variant="contained" onClick={() => navigate("/")}>{t("form.kembaliBeranda")}</Button>
       </Box>
     );
   }
 
-  const previewAvatar = formData.avatar
-    ? URL.createObjectURL(formData.avatar)
-    : formData.current_avatar_url;
+  const previewAvatar = avatarObjectUrl ?? formData.current_avatar_url;
 
   return (
-    <Box sx={{ maxWidth: 900, mx: 'auto' }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
-        {isEditMode ? "Ubah Detail Anggota" : "Daftarkan Anggota Baru"}
-      </Typography>
-      <Typography variant="body1" color="textSecondary" sx={{ mb: 4 }}>
-        Hubungkan profil anggota dengan akun pengguna untuk sinkronisasi otomatis.
-      </Typography>
+    <Stack spacing={3}>
+      <PageHeader
+        title={isEditMode ? "Ubah Detail Anggota" : "Daftarkan Anggota Baru"}
+        description="Hubungkan profil anggota dengan akun pengguna untuk sinkronisasi otomatis."
+      />
 
-      <Paper elevation={0} sx={{ p: 4, borderRadius: 4, border: '1px solid', borderColor: 'grey.200' }}>
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={4}>
-            
-            <Alert severity="info">
-              Menghubungkan anggota ke <b>akun pengguna</b> akan menyinkronkan nama dan avatar saat pengguna memperbarui profil.
-            </Alert>
-
-            <Grid container spacing={3}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("form.hubungkanAkun")}</FormLabel>
-                <TextField
-                  select
-                  fullWidth
-                  name="user_id"
-                  value={formData.user_id}
-                  onChange={handleSelectChange}
-                  error={!!errors.user_id}
-                  helperText={errors.user_id ? errors.user_id[0] : "Pilih akun login pemilik profil ini"}
-                >
-                  <MenuItem value=""><em>Tidak ada (tanpa akses login)</em></MenuItem>
-                  {users.map((u) => (
-                    <MenuItem key={u.id} value={u.id}>
-                      {u.name} ({u.email})
-                    </MenuItem>
-                  ))}
-                </TextField>
+      <Box component="form" onSubmit={handleSubmit}>
+        <Stack spacing={3}>
+          <SectionCard
+            title="Akun pengguna"
+            description="Akun login yang terhubung dengan profil anggota ini."
+          >
+            <Stack spacing={2.5}>
+              <Alert severity="info" variant="outlined" sx={{ fontSize: 14 }}>
+                Menghubungkan anggota ke <b>akun pengguna</b> akan menyinkronkan nama dan avatar saat pengguna memperbarui profil.
+              </Alert>
+              <Grid container spacing={2.5}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <FieldLabel id="member-user_id-label">{t("form.hubungkanAkun")}</FieldLabel>
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    id="member-user_id"
+                    name="user_id"
+                    value={formData.user_id}
+                    onChange={handleSelectChange}
+                    error={!!errors.user_id}
+                    helperText={errors.user_id ? errors.user_id[0] : "Pilih akun login pemilik profil ini"}
+                    slotProps={{ select: { labelId: "member-user_id-label", displayEmpty: true } }}
+                  >
+                    <MenuItem value=""><em>Tidak ada (tanpa akses login)</em></MenuItem>
+                    {users.map((u) => (
+                      <MenuItem key={u.id} value={u.id}>
+                        {u.name} ({u.email})
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
               </Grid>
+            </Stack>
+          </SectionCard>
 
+          <SectionCard title="Data anggota" description="Identitas anggota dan angkatan.">
+            <Grid container spacing={2.5}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>No. Anggota</FormLabel>
+                <FieldLabel htmlFor="member-no_anggota">No. Anggota</FieldLabel>
                 <TextField
                   fullWidth
+                  size="small"
+                  id="member-no_anggota"
                   name="no_anggota"
                   placeholder="contoh: P.XVI.002.099.KH"
                   value={formData.no_anggota}
@@ -276,38 +292,31 @@ const MemberFormPage = () => {
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("profile.namaLengkap")}</FormLabel>
-                <TextField
-                  fullWidth
-                  name="nama_lengkap"
-                  value={formData.nama_lengkap}
-                  onChange={handleChange}
-                  error={!!errors.nama_lengkap}
-                  helperText={errors.nama_lengkap ? errors.nama_lengkap[0] : ""}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("profile.lapangan")}</FormLabel>
-                <TextField
-                  fullWidth
-                  name="nama_lapangan"
-                  value={formData.nama_lapangan}
-                  onChange={handleChange}
-                  error={!!errors.nama_lapangan}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>Angkatan</FormLabel>
+                <FieldLabel id="member-angkatan_id-label">Angkatan</FieldLabel>
                 <TextField
                   select
                   fullWidth
+                  size="small"
+                  id="member-angkatan_id"
                   name="angkatan_id"
                   value={formData.angkatan_id}
                   onChange={handleSelectChange}
                   error={!!errors.angkatan_id}
+                  helperText={errors.angkatan_id ? errors.angkatan_id[0] : ""}
+                  slotProps={{
+                    select: {
+                      labelId: "member-angkatan_id-label",
+                      displayEmpty: true,
+                      renderValue: (value) => {
+                        const selected = angkatans.find((a) => a.id === value);
+                        return selected ? `${selected.nama_angkatan} (${selected.year})` : (
+                          <Box component="span" sx={{ color: "text.disabled" }}>Pilih angkatan</Box>
+                        );
+                      },
+                    },
+                  }}
                 >
+                  <MenuItem value="" disabled>Pilih angkatan</MenuItem>
                   {angkatans.map((a) => (
                     <MenuItem key={a.id} value={a.id}>
                       {a.nama_angkatan} ({a.year})
@@ -317,69 +326,118 @@ const MemberFormPage = () => {
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("profile.domisili")}</FormLabel>
+                <FieldLabel htmlFor="member-nama_lengkap">{t("profile.namaLengkap")}</FieldLabel>
                 <TextField
                   fullWidth
-                  name="domisili"
-                  value={formData.domisili}
+                  size="small"
+                  id="member-nama_lengkap"
+                  name="nama_lengkap"
+                  value={formData.nama_lengkap}
                   onChange={handleChange}
+                  error={!!errors.nama_lengkap}
+                  helperText={errors.nama_lengkap ? errors.nama_lengkap[0] : ""}
                 />
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t("form.kontak")}</FormLabel>
+                <FieldLabel htmlFor="member-nama_lapangan">{t("profile.lapangan")}</FieldLabel>
                 <TextField
                   fullWidth
-                  name="kontak"
-                  value={formData.kontak}
+                  size="small"
+                  id="member-nama_lapangan"
+                  name="nama_lapangan"
+                  value={formData.nama_lapangan}
                   onChange={handleChange}
+                  error={!!errors.nama_lapangan}
+                  helperText={errors.nama_lapangan ? errors.nama_lapangan[0] : ""}
                 />
               </Grid>
             </Grid>
+          </SectionCard>
 
-            <Divider />
-
-            <Box>
-              <FormLabel sx={{ mb: 2, display: "block", fontWeight: "bold" }}>{t("form.fotoProfil")}</FormLabel>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                <Avatar 
-                  src={previewAvatar || ""} 
-                  sx={{ width: 100, height: 100, border: '1px solid', borderColor: 'grey.300' }}
+          <SectionCard title="Kontak" description="Domisili dan kontak yang dapat dihubungi.">
+            <Grid container spacing={2.5}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <FieldLabel htmlFor="member-domisili">{t("profile.domisili")}</FieldLabel>
+                <TextField
+                  fullWidth
+                  size="small"
+                  id="member-domisili"
+                  name="domisili"
+                  value={formData.domisili}
+                  onChange={handleChange}
+                  error={!!errors.domisili}
+                  helperText={errors.domisili ? errors.domisili[0] : ""}
                 />
-                <Box>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <FieldLabel htmlFor="member-kontak">{t("form.kontak")}</FieldLabel>
+                <TextField
+                  fullWidth
+                  size="small"
+                  id="member-kontak"
+                  name="kontak"
+                  value={formData.kontak}
+                  onChange={handleChange}
+                  error={!!errors.kontak}
+                  helperText={errors.kontak ? errors.kontak[0] : ""}
+                />
+              </Grid>
+            </Grid>
+          </SectionCard>
+
+          <SectionCard
+            title={t("form.fotoProfil")}
+            description="JPG, PNG, atau GIF. Maksimal 2MB."
+            footer={
+              <>
+                <Button variant="outlined" color="inherit" onClick={() => navigate("/dashboard/member")}>
+                  {t("crud.batal")}
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={submitting || isUploadingAvatar}
+                  startIcon={submitting ? <CircularProgress size={14} color="inherit" /> : undefined}
+                >
+                  {isEditMode ? "Perbarui Profil" : "Daftarkan Anggota"}
+                </Button>
+              </>
+            }
+          >
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5} sx={{ alignItems: { xs: "flex-start", sm: "center" } }}>
+              <Avatar
+                src={previewAvatar || ""}
+                alt=""
+                sx={{ width: 80, height: 80, border: "1px solid", borderColor: "divider", bgcolor: "action.hover", color: "text.secondary" }}
+              />
+              <Box>
+                <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", rowGap: 1 }}>
                   <Button
                     variant="outlined"
+                    color="inherit"
                     component="label"
-                    startIcon={<FontAwesomeIcon icon={faPlus} />}
+                    startIcon={<FontAwesomeIcon icon={faPlus} style={{ fontSize: 13 }} />}
                   >
                     Unggah Foto Baru
                     <input type="file" hidden accept="image/*" name="avatar" onChange={handleChange} />
                   </Button>
                   {previewAvatar && (
-                    <Button color="error" sx={{ ml: 2 }} onClick={handleRemoveAvatar}>{t('crud.hapus')}</Button>
+                    <Button color="error" onClick={handleRemoveAvatar}>{t("crud.hapus")}</Button>
                   )}
-                  <Typography variant="caption" sx={{ display: "block", mt: 1, color: 'text.secondary' }}>
-                    JPG, PNG, atau GIF. Maksimal 2MB.
+                </Stack>
+                {errors.avatar && errors.avatar.length > 0 ? (
+                  <Typography role="alert" sx={{ mt: 1, fontSize: 13, color: "error.main" }}>
+                    {errors.avatar[0]}
                   </Typography>
-                </Box>
+                ) : null}
               </Box>
-            </Box>
-
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, pt: 2 }}>
-              <Button variant="text" onClick={() => navigate("/dashboard/member")}>{t('crud.batal')}</Button>
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={submitting || isUploadingAvatar}
-                sx={{ px: 4, borderRadius: 2 }}
-              >
-                {submitting ? <CircularProgress size={24} /> : isEditMode ? "Perbarui Profil" : "Daftarkan Anggota"}
-              </Button>
-            </Box>
-          </Stack>
-        </form>
-      </Paper>
-    </Box>
+            </Stack>
+          </SectionCard>
+        </Stack>
+      </Box>
+    </Stack>
   );
 };
 

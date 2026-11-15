@@ -7,6 +7,8 @@ import { createGallery, getGalleryById, updateGallery } from "../../controllers/
 import { useAuth } from "../../hooks/useAuth";
 import { useGalleryImage } from "../../hooks/useGalleryImage";
 import { GalleryForm } from "./GalleryForm";
+import { PageHeader } from "./PageHeader";
+import { SectionCard } from "./SectionCard";
 
 type GalleryEditorPageProps = { mode: "create" | "edit"; id?: string };
 
@@ -61,26 +63,29 @@ export const GalleryEditorPage = ({ mode, id }: GalleryEditorPageProps) => {
 
   if (!user || !["admin", "officer", "member"].includes(user.role)) {
     return (
-      <Box sx={{ p: 3, textAlign: "center" }}>
-        <Typography variant="h4" color="error">{t("form.aksesDitolak")}</Typography>
+      <Box sx={{ py: 8, textAlign: "center" }}>
+        <Typography component="h1" sx={{ fontSize: 20, fontWeight: 600, color: "error.main" }}>{t("form.aksesDitolak")}</Typography>
         <Button sx={{ mt: 3 }} variant="contained" onClick={() => navigate("/")}>{t("form.kembaliBeranda")}</Button>
       </Box>
     );
   }
 
   if (loading) {
-    return <Stack role="status" spacing={2} sx={{ alignItems: "center", py: 8 }}><CircularProgress /><Typography>{t("galleryForm.loading")}</Typography></Stack>;
+    return <Stack role="status" spacing={1.5} sx={{ alignItems: "center", py: 10 }}><CircularProgress size={28} /><Typography sx={{ fontSize: 14, color: "text.secondary" }}>{t("galleryForm.loading")}</Typography></Stack>;
   }
 
   if (loadError) {
     return (
-      <Box sx={{ maxWidth: 640, mx: "auto", py: 5 }}>
-        <Alert severity="error">{t("galleryForm.loadError")}</Alert>
-        <Stack direction={{ xs: "column", sm: "row" }} sx={{ gap: 2, mt: 3 }}>
-          <Button variant="outlined" color="inherit" onClick={() => navigate("/dashboard/gallery")}>{t("galleryForm.back")}</Button>
-          <Button variant="contained" onClick={() => setRetry((value) => value + 1)}>{t("galleryForm.retry")}</Button>
-        </Stack>
-      </Box>
+      <Stack spacing={3}>
+        <PageHeader title={t("galleryForm.editTitle")} />
+        <SectionCard>
+          <Alert severity="error">{t("galleryForm.loadError")}</Alert>
+          <Stack direction={{ xs: "column", sm: "row" }} sx={{ gap: 1.25, mt: 2.5 }}>
+            <Button variant="outlined" color="inherit" sx={{ borderColor: "divider" }} onClick={() => navigate("/dashboard/gallery")}>{t("galleryForm.back")}</Button>
+            <Button variant="contained" onClick={() => setRetry((value) => value + 1)}>{t("galleryForm.retry")}</Button>
+          </Stack>
+        </SectionCard>
+      </Stack>
     );
   }
 

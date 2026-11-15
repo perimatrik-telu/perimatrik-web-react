@@ -9,6 +9,7 @@ import {
   type DashboardTableColumn,
 } from "../../components/dashboard/DashboardTable";
 import { useAuth } from "../../hooks/useAuth";
+import { useConfirm } from "../../components/dashboard/confirm-context";
 
 type PagedResponse<T> = {
   data: T[];
@@ -54,6 +55,7 @@ export const ContentTablePage = <T extends { id: string }>({
 }: ContentTablePageProps<T>) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const confirm = useConfirm();
   const [rows, setRows] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -105,7 +107,10 @@ export const ContentTablePage = <T extends { id: string }>({
   }, [filterRow, rows, searchQuery]);
 
   const handleDelete = async (row: T) => {
-    const confirmed = window.confirm(`Hapus ${title.toLowerCase()} ini?`);
+    const confirmed = await confirm({
+      title: `Hapus ${title.toLowerCase()} ini?`,
+      description: "Tindakan ini tidak dapat dibatalkan.",
+    });
     if (!confirmed) {
       return;
     }

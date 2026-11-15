@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
@@ -12,6 +11,7 @@ import {
 } from "../../components/dashboard/DashboardTable";
 import api from "../../api/api";
 import { useAuth } from "../../hooks/useAuth";
+import { useConfirm } from "../../components/dashboard/confirm-context";
 
 interface Angkatan {
   id: string;
@@ -20,14 +20,30 @@ interface Angkatan {
 }
 
 const columns: DashboardTableColumn<Angkatan>[] = [
-  { key: "nama_angkatan", label: "Nama Angkatan" },
-  { key: "year", label: "Tahun", width: 140 },
+  {
+    key: "nama_angkatan",
+    label: "Nama angkatan",
+    render: (row) => (
+      <Typography noWrap sx={{ fontSize: 14, fontWeight: 600, color: "text.primary", maxWidth: 480 }}>
+        {row.nama_angkatan}
+      </Typography>
+    ),
+  },
+  {
+    key: "year",
+    label: "Tahun",
+    width: 120,
+    align: "right",
+    render: (row) => (
+      <Box component="span" sx={{ fontVariantNumeric: "tabular-nums" }}>{row.year || "—"}</Box>
+    ),
+  },
 ];
 
 const AngkatanListPage = () => {
-  const { t } = useTranslation();
   const { user, isLoading: userLoading } = useAuth();
   const navigate = useNavigate();
+  const confirm = useConfirm();
 
   const [angkatans, setAngkatans] = useState<Angkatan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +73,7 @@ const AngkatanListPage = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Hapus angkatan ini?")) {
+    if (!(await confirm({ title: "Hapus angkatan ini?", description: "Tindakan ini tidak dapat dibatalkan." }))) {
       return;
     }
 
@@ -103,10 +119,10 @@ const AngkatanListPage = () => {
   if (!user || (user.role !== "admin" && user.role !== "officer")) {
     return (
       <Box sx={{ textAlign: "center", mt: 6 }}>
-        <Typography variant="h4" color="error">
+        <Typography component="h1" sx={{ fontSize: 20, fontWeight: 600, color: "text.primary" }}>
           Akses Ditolak
         </Typography>
-        <Button sx={{ mt: 3 }} variant="contained" onClick={() => navigate("/")}>
+        <Button sx={{ mt: 2.5 }} variant="contained" onClick={() => navigate("/")}>
           Kembali ke Beranda
         </Button>
       </Box>
@@ -137,6 +153,7 @@ const AngkatanListPage = () => {
         },
       ]}
       emptyTitle="Angkatan tidak ditemukan"
+      minWidth={560}
       onPageChange={setPage}
       onRowsPerPageChange={(value) => {
         setRowsPerPage(value);

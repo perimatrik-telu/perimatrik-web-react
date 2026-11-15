@@ -50,6 +50,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { Profile as UserProfile } from "../../partials/mui-template/profile-partial";
 import { useThemeContext } from "../../context/theme-context";
 import { ThemeProvider } from "../../context/ThemeContext";
+import { ConfirmProvider } from "../../components/dashboard/ConfirmProvider";
 
 interface NavItem {
   text: string;
@@ -366,8 +367,10 @@ const DashboardContent: React.FC<{ children?: ReactNode }> = ({ children }) => {
 };
 
 const DashboardLayout: React.FC<{ children?: ReactNode }> = ({ children }) => (
-  <ThemeProvider>
-    <DashboardContent>{children}</DashboardContent>
+  <ThemeProvider variant="dashboard">
+    <ConfirmProvider>
+      <DashboardContent>{children}</DashboardContent>
+    </ConfirmProvider>
   </ThemeProvider>
 );
 

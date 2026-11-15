@@ -6,10 +6,11 @@ import {
   TextField,
   Button,
   CircularProgress,
-  Paper,
-  FormLabel,
+  Grid,
+  Stack,
 } from "@mui/material";
-import { Stack } from "@mui/system";
+import { PageHeader } from "../../components/dashboard/PageHeader";
+import { FieldLabel, SectionCard } from "../../components/dashboard/SectionCard";
 import api from "../../api/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -111,11 +112,11 @@ const AngkatanFormPage = () => {
   if (!user || (user.role !== "admin" && user.role !== "officer")) {
     return (
       <Box sx={{ textAlign: "center", mt: 6 }}>
-        <Typography variant="h4" color="error">
+        <Typography component="h1" sx={{ fontSize: 20, fontWeight: 600, color: "text.primary" }}>
           Akses Ditolak
         </Typography>
         <Button
-          sx={{ mt: 3 }}
+          sx={{ mt: 2.5 }}
           variant="contained"
           onClick={() => navigate("/")}
         >
@@ -126,24 +127,44 @@ const AngkatanFormPage = () => {
   }
 
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom>
-        {isEditMode ? "Ubah Angkatan" : "Tambah Angkatan Baru"}
-      </Typography>
+    <Stack spacing={3}>
+      <PageHeader
+        title={isEditMode ? "Ubah Angkatan" : "Tambah Angkatan Baru"}
+        description="Nama dan tahun angkatan anggota PERIMATRIK."
+      />
 
-      <Paper elevation={3} sx={{ p: 4, mt: 3 }}>
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={3}>
-            <Box sx={{ width: "100%" }}>
-              <FormLabel
-                htmlFor="nama_angkatan"
-                sx={{ mb: 1, display: "block", fontWeight: "bold" }}
+      <Box component="form" onSubmit={handleSubmit}>
+        <SectionCard
+          title="Data angkatan"
+          footer={
+            <>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => navigate("/dashboard/angkatan")}
+                disabled={submitting}
               >
-                Nama Angkatan
-              </FormLabel>
+                {t("crud.batal")}
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={submitting}
+                startIcon={submitting ? <CircularProgress size={14} color="inherit" /> : undefined}
+              >
+                {isEditMode ? "Perbarui Angkatan" : "Tambah Angkatan"}
+              </Button>
+            </>
+          }
+        >
+          <Grid container spacing={2.5}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FieldLabel htmlFor="nama_angkatan">Nama Angkatan</FieldLabel>
               <TextField
                 id="nama_angkatan"
                 fullWidth
+                size="small"
                 name="nama_angkatan"
                 value={formData.nama_angkatan}
                 onChange={handleChange}
@@ -153,19 +174,16 @@ const AngkatanFormPage = () => {
                   maxLength: 255,
                 } }}
               />
-            </Box>
+            </Grid>
 
-            <Box sx={{ width: "100%" }}>
-              <FormLabel
-                htmlFor="year"
-                sx={{ mb: 1, display: "block", fontWeight: "bold" }}
-              >
-                Tahun
-              </FormLabel>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FieldLabel htmlFor="year">Tahun</FieldLabel>
               <TextField
                 id="year"
                 fullWidth
+                size="small"
                 name="year"
+                placeholder="contoh: 2024"
                 value={formData.year}
                 onChange={handleChange}
                 error={!!errors.year}
@@ -173,36 +191,14 @@ const AngkatanFormPage = () => {
                 slotProps={{ htmlInput: {
                   maxLength: 4,
                   pattern: "\\d{4}", // HTML5 pattern for 4 digits
+                  inputMode: "numeric",
                 } }}
               />
-            </Box>
-
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => navigate("/dashboard/angkatan")}
-                disabled={submitting}
-              >{t('crud.batal')}</Button>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={submitting}
-              >
-                {submitting ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : isEditMode ? (
-                  "Perbarui Angkatan"
-                ) : (
-                  "Tambah Angkatan"
-                )}
-              </Button>
-            </Box>
-          </Stack>
-        </form>
-      </Paper>
-    </Box>
+            </Grid>
+          </Grid>
+        </SectionCard>
+      </Box>
+    </Stack>
   );
 };
 

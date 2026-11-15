@@ -380,9 +380,9 @@
     "kontak": "Contact"
   },
   "profile": {
-    "alamatEmail": "EMAIL ADDRESS",
-    "namaLapangan": "FIELD NAME",
-    "statusAkun": "ACCOUNT STATUS",
+    "alamatEmail": "Email address",
+    "namaLapangan": "Field name",
+    "statusAkun": "Account status",
     "aktif": "Active Verified",
     "detail": "Account Details",
     "namaLengkap": "Full Name",
@@ -397,9 +397,9 @@
     "passwordBaru": "New Password"
   },
   "setting": {
-    "emailResmi": "OFFICIAL EMAIL",
-    "alamatSekretariat": "SECRETARIAT ADDRESS",
-    "pratinjauPeta": "MAP LOCATION PREVIEW",
+    "emailResmi": "Official email",
+    "alamatSekretariat": "Secretariat address",
+    "pratinjauPeta": "Map location preview",
     "urlBelum": "Map URL not filled",
     "detailKontak": "Contact Details",
     "emailLabel": "Official Email",
@@ -429,5 +429,33 @@
   "Lokasi": "Location",
   "Pengaturan": "Settings",
   "Akses": "Access",
-  "Kontak": "Contact"
+  "Kontak": "Contact",
+  "newsForm": {
+    "createTitle": "Add news",
+    "editTitle": "Edit news",
+    "createDesc": "Write official organization news to publish on the website.",
+    "editDesc": "Update the news title, content, image, and publish date.",
+    "back": "Back to news",
+    "imageDesc": "The image appears in the news list and on the news page.",
+    "publishTitle": "Publish date",
+    "publishDesc": "Choose when the news appears on the website.",
+    "autoPublish": "Set automatically (now)",
+    "save": "Save",
+    "saving": "Saving…",
+    "updating": "Updating…",
+    "compressFailed": "Failed to compress the image.",
+    "requiredCreate": "Fill in all fields and choose an image.",
+    "requiredEdit": "Fill in all fields.",
+    "created": "News created.",
+    "createFailed": "Failed to create news.",
+    "createError": "Something went wrong while creating the news.",
+    "updated": "News updated.",
+    "updateFailed": "Failed to update news.",
+    "updateError": "Something went wrong while updating the news.",
+    "notFound": "News not found.",
+    "loadFailed": "Failed to load news.",
+    "docCreate": "Add News - Dashboard",
+    "docEdit": "Edit News - Dashboard",
+    "docEditNamed": "Edit News: {{title}} - Dashboard"
+  }
 }

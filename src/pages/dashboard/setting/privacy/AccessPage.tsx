@@ -14,7 +14,6 @@ import {
   Autocomplete,
   Avatar,
   Box,
-  Chip,
   CircularProgress,
   Divider,
   FormControl,
@@ -25,7 +24,6 @@ import {
   Stack,
   TextField,
   Typography,
-  type ChipProps,
   type SelectChangeEvent,
 } from "@mui/material";
 import ModalComponent from "../../../../components/modal-component";
@@ -38,6 +36,8 @@ import {
   DashboardTable,
   type DashboardTableColumn,
 } from "../../../../components/dashboard/DashboardTable";
+import { StatusPill } from "../../../../components/dashboard/PageHeader";
+import { useConfirm } from "../../../../components/dashboard/confirm-context";
 
 type UserRole = User["role"];
 type RoleFilter = "All" | UserRole;
@@ -88,27 +88,35 @@ const roleLabel = (role: string) => {
   }
 };
 
-const getRoleIcon = (role: string) => {
+type RoleTone = "warning" | "info" | "success" | "neutral";
+
+/** Consistent role colours across the dashboard: admin = warning, officer = info, member = success. */
+const getRoleTone = (role: string): RoleTone => {
   switch (role) {
     case "admin":
-      return faUserShield;
+      return "warning";
     case "officer":
-      return faUserGear;
+      return "info";
+    case "member":
+      return "success";
     default:
-      return faUserIcon;
+      return "neutral";
   }
 };
 
-const getRoleColor = (role: string): ChipProps["color"] => {
-  switch (role) {
-    case "admin":
-      return "error";
-    case "officer":
-      return "warning";
-    default:
-      return "success";
-  }
-};
+const sectionLabelSx = { fontSize: 14, fontWeight: 600, color: "text.primary", mb: 1.25 } as const;
+
+const roleOption = (icon: typeof faUserIcon, label: string, hint: string) => (
+  <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
+    <Box component="span" sx={{ color: "text.secondary", display: "inline-flex", width: 16, justifyContent: "center", fontSize: 13 }}>
+      <FontAwesomeIcon icon={icon} />
+    </Box>
+    <Box>
+      <Typography sx={{ fontSize: 14, color: "text.primary", lineHeight: 1.4 }}>{label}</Typography>
+      <Typography sx={{ fontSize: 12, color: "text.secondary", lineHeight: 1.4 }}>{hint}</Typography>
+    </Box>
+  </Stack>
+);
 
 const defaultFormData: AccessFormData = {
   name: "",
@@ -120,6 +128,7 @@ const defaultFormData: AccessFormData = {
 
 export const AccessPage = () => {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<AccessUser[]>([]);
   const [members, setMembers] = useState<MemberOption[]>([]);
@@ -135,6 +144,8 @@ export const AccessPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<AccessFormData>(defaultFormData);
   const [saving, setSaving] = useState(false);
+  // Show inline required-field errors only after the first save attempt.
+  const [showErrors, setShowErrors] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -164,6 +175,7 @@ export const AccessPage = () => {
   const handleModalToggle = (edit = false, user: AccessUser | null = null) => {
     setIsEditing(edit);
     setSelectedUser(user);
+    setShowErrors(false);
 
     if (edit && user) {
       setFormData({
@@ -204,6 +216,7 @@ export const AccessPage = () => {
 
   const handleSave = async () => {
     if (!formData.name || !formData.email || (!isEditing && !formData.password)) {
+      setShowErrors(true);
       toast.error("Lengkapi semua data wajib");
       return;
     }
@@ -242,7 +255,7 @@ export const AccessPage = () => {
       return;
     }
 
-    if (!window.confirm(`Hapus akses untuk ${user.name}?`)) {
+    if (!(await confirm({ title: `Hapus akses untuk ${user.name}?`, description: "Akun ini tidak akan bisa masuk ke dasbor lagi. Tindakan ini tidak dapat dibatalkan." }))) {
       return;
     }
 
@@ -291,17 +304,21 @@ export const AccessPage = () => {
   const columns: DashboardTableColumn<AccessUser>[] = [
     {
       key: "user",
-      label: "Informasi Pengguna",
+      label: "Pengguna",
       render: (user) => (
-        <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
-          <Avatar src={user.avatar || undefined} sx={{ bgcolor: "primary.main", fontWeight: 800 }}>
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", minWidth: 0 }}>
+          <Avatar
+            src={user.avatar || undefined}
+            alt=""
+            sx={{ width: 36, height: 36, fontSize: 14, fontWeight: 600, bgcolor: "action.selected", color: "text.secondary" }}
+          >
             {user.name.charAt(0).toUpperCase()}
           </Avatar>
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="body2" sx={{ fontWeight: 800 }} noWrap>
+            <Typography noWrap sx={{ fontSize: 14, fontWeight: 600, color: "text.primary", maxWidth: 320 }}>
               {user.name}
             </Typography>
-            <Typography variant="body2" color="text.secondary" noWrap>
+            <Typography noWrap sx={{ fontSize: 13, color: "text.secondary", maxWidth: 320 }}>
               {user.email}
             </Typography>
           </Box>
@@ -310,33 +327,27 @@ export const AccessPage = () => {
     },
     {
       key: "role",
-      label: "Hak Akses",
-      width: 190,
-      render: (user) => (
-        <Chip
-          icon={<FontAwesomeIcon icon={getRoleIcon(user.role)} style={{ fontSize: 12 }} />}
-          label={roleLabel(user.role).toUpperCase()}
-          color={getRoleColor(user.role)}
-          size="small"
-          sx={{ borderRadius: 1, fontWeight: 800 }}
-        />
-      ),
+      label: "Hak akses",
+      width: 160,
+      render: (user) => <StatusPill tone={getRoleTone(user.role)}>{roleLabel(user.role)}</StatusPill>,
     },
     {
       key: "member",
-      label: "Anggota Tertaut",
+      label: "Anggota tertaut",
       width: 210,
       render: (user) =>
         user.member ? (
-          <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-            <FontAwesomeIcon icon={faLink} style={{ fontSize: 12, opacity: 0.5 }} />
-            <Typography variant="body2" sx={{ fontWeight: 700 }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: "center", minWidth: 0 }}>
+            <Box component="span" aria-hidden sx={{ color: "text.disabled", fontSize: 12, display: "inline-flex" }}>
+              <FontAwesomeIcon icon={faLink} />
+            </Box>
+            <Typography noWrap sx={{ fontSize: 14, color: "text.primary", fontVariantNumeric: "tabular-nums" }}>
               {user.member.no_anggota}
             </Typography>
           </Stack>
         ) : (
-          <Typography variant="caption" color="text.disabled">
-            Belum Tertaut
+          <Typography component="span" sx={{ fontSize: 13, color: "text.disabled" }}>
+            Belum tertaut
           </Typography>
         ),
     },
@@ -360,16 +371,18 @@ export const AccessPage = () => {
           setPage(0);
         }}
         filters={
-          <FormControl size="small" sx={{ minWidth: { xs: "100%", sm: 156 } }}>
-            <InputLabel>Peran</InputLabel>
+          <FormControl size="small" sx={{ minWidth: { xs: "100%", sm: 168 } }}>
+            <InputLabel id="access-role-filter-label">Peran</InputLabel>
             <Select
+              labelId="access-role-filter-label"
+              id="access-role-filter"
               value={selectedRole}
               onChange={(event) => {
                 setSelectedRole(event.target.value as RoleFilter);
                 setPage(0);
               }}
-              label={t("form.role")}
-              sx={{ borderRadius: 1, bgcolor: "background.paper" }}
+              label="Peran"
+              sx={{ bgcolor: "background.paper" }}
             >
               <MenuItem value="All">{t("setting.semuaPeran")}</MenuItem>
               {roles.map((role) => (
@@ -413,19 +426,23 @@ export const AccessPage = () => {
       <ModalComponent
         isOpen={isModalOpen}
         title={isEditing ? "Perbarui Hak Akses Pengguna" : "Daftarkan Akun Baru"}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          if (!saving) setIsModalOpen(false);
+        }}
         onSave={handleSave}
+        saving={saving}
+        saveButtonLabel={saving ? "Menyimpan…" : isEditing ? "Simpan perubahan" : "Daftarkan akun"}
       >
         {saving ? (
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 4 }}>
-            <CircularProgress size={40} sx={{ mb: 2 }} />
-            <Typography>Memproses permintaan...</Typography>
+          <Box role="status" sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 5 }}>
+            <CircularProgress size={28} sx={{ mb: 1.5 }} />
+            <Typography sx={{ fontSize: 14, color: "text.secondary" }}>Memproses permintaan...</Typography>
           </Box>
         ) : (
-          <Stack spacing={3} sx={{ pt: 1 }}>
+          <Stack spacing={3}>
             {!isEditing && (
               <Box>
-                <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1 }}>
+                <Typography component="h3" id="access-member-label" sx={sectionLabelSx}>
                   Pilih Anggota Terdaftar (Opsional)
                 </Typography>
                 <Autocomplete
@@ -451,8 +468,10 @@ export const AccessPage = () => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      size="small"
                       placeholder="Cari nama atau nomor anggota..."
                       variant="outlined"
+                      slotProps={{ ...params.slotProps, htmlInput: { ...params.slotProps.htmlInput, "aria-labelledby": "access-member-label" } }}
                       helperText="Pilih anggota untuk mengisi nama otomatis dan menautkan akun ini"
                     />
                   )}
@@ -462,7 +481,7 @@ export const AccessPage = () => {
             )}
 
             {formData.member_id && (
-              <Alert severity="success">
+              <Alert severity="success" variant="outlined" sx={{ fontSize: 14 }}>
                 Ditautkan ke{" "}
                 <b>{members.find((member) => member.id === formData.member_id)?.nama_lengkap}</b>.
                 Informasi profil akan tersinkron otomatis.
@@ -472,7 +491,7 @@ export const AccessPage = () => {
             <Divider />
 
             <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1 }}>
+              <Typography component="h3" sx={sectionLabelSx}>
                 Informasi Login
               </Typography>
               <Grid container spacing={2}>
@@ -485,14 +504,17 @@ export const AccessPage = () => {
                     onChange={handleInputChange}
                     required
                     disabled={Boolean(formData.member_id)}
+                    error={showErrors && !formData.name}
                     helperText={
-                      formData.member_id
-                        ? "Nama otomatis tersinkron dari profil anggota tertaut."
-                        : ""
+                      showErrors && !formData.name
+                        ? "Nama wajib diisi."
+                        : formData.member_id
+                          ? "Nama otomatis tersinkron dari profil anggota tertaut."
+                          : ""
                     }
                   />
                 </Grid>
-                <Grid size={12}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Alamat Email"
@@ -501,9 +523,11 @@ export const AccessPage = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
+                    error={showErrors && !formData.email}
+                    helperText={showErrors && !formData.email ? "Email wajib diisi." : undefined}
                   />
                 </Grid>
-                <Grid size={12}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label={isEditing ? "Ubah Password" : "Password Akun"}
@@ -513,55 +537,35 @@ export const AccessPage = () => {
                     value={formData.password}
                     onChange={handleInputChange}
                     required={!isEditing}
+                    error={showErrors && !isEditing && !formData.password}
+                    helperText={showErrors && !isEditing && !formData.password ? "Password wajib diisi untuk akun baru." : undefined}
                   />
                 </Grid>
               </Grid>
             </Box>
 
             <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1 }}>
+              <Typography component="h3" sx={sectionLabelSx}>
                 Akses Sistem
               </Typography>
               <FormControl fullWidth>
-                <InputLabel>{t("setting.peranSistem")}</InputLabel>
+                <InputLabel id="access-role-label">{t("setting.peranSistem")}</InputLabel>
                 <Select
+                  labelId="access-role-label"
+                  id="access-role"
                   name="role"
                   value={formData.role}
                   onChange={handleInputChange}
                   label="Peran Sistem"
                 >
                   <MenuItem value="member">
-                    <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
-                      <FontAwesomeIcon icon={faUserIcon} style={{ opacity: 0.6 }} />
-                      <Box>
-                        <Typography variant="body1">{t("setting.member")}</Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Mengelola Artikel & Galeri
-                        </Typography>
-                      </Box>
-                    </Stack>
+                    {roleOption(faUserIcon, t("setting.member"), "Mengelola Artikel & Galeri")}
                   </MenuItem>
                   <MenuItem value="officer">
-                    <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
-                      <FontAwesomeIcon icon={faUserGear} style={{ opacity: 0.6 }} />
-                      <Box>
-                        <Typography variant="body1">{t("setting.officer")}</Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Mengelola Berita & Galeri
-                        </Typography>
-                      </Box>
-                    </Stack>
+                    {roleOption(faUserGear, t("setting.officer"), "Mengelola Berita & Galeri")}
                   </MenuItem>
                   <MenuItem value="admin">
-                    <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
-                      <FontAwesomeIcon icon={faUserShield} style={{ opacity: 0.6 }} />
-                      <Box>
-                        <Typography variant="body1">{t("setting.admin")}</Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Akses penuh sistem
-                        </Typography>
-                      </Box>
-                    </Stack>
+                    {roleOption(faUserShield, t("setting.admin"), "Akses penuh sistem")}
                   </MenuItem>
                 </Select>
               </FormControl>

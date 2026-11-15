@@ -1,9 +1,7 @@
-import { Typography } from "@mui/material";
 import { deleteNews, getAllNews } from "../../controllers/news-controller";
-import {
-  TableImage,
-  type DashboardTableColumn,
-} from "../../components/dashboard/DashboardTable";
+import type { DashboardTableColumn } from "../../components/dashboard/DashboardTable";
+import { ContentStatusPill, MediaTitleCell } from "./contentColumns";
+import { formatDate } from "../../utils/format";
 import { ContentTablePage } from "./ContentTablePage";
 
 type NewsRow = {
@@ -13,33 +11,18 @@ type NewsRow = {
   author?: string;
   views?: number;
   published_at?: string | null;
+  status?: "draft" | "active" | "inactive";
 };
 
 const newsColumns: DashboardTableColumn<NewsRow>[] = [
   {
-    key: "image",
-    label: "Gambar",
-    width: 104,
-    render: (row) => <TableImage src={row.image} alt={row.title} />,
-  },
-  {
     key: "title",
-    label: "Judul",
-    render: (row) => (
-      <Typography variant="body2" sx={{ fontWeight: 800, maxWidth: 360 }} noWrap>
-        {row.title}
-      </Typography>
-    ),
+    label: "Berita",
+    render: (row) => <MediaTitleCell image={row.image} title={row.title} subtitle={row.author} />,
   },
-  { key: "author", label: "Penulis", width: 180 },
-  { key: "views", label: "Dilihat", width: 96, align: "right" },
-  {
-    key: "published_at",
-    label: "Terbit",
-    width: 150,
-    render: (row) =>
-      row.published_at ? new Date(row.published_at).toLocaleDateString("id-ID") : "-",
-  },
+  { key: "status", label: "Status", width: 120, render: (row) => <ContentStatusPill row={row} /> },
+  { key: "views", label: "Dilihat", width: 100, align: "right", render: (row) => (row.views ?? 0).toLocaleString("id-ID") },
+  { key: "published_at", label: "Tanggal terbit", width: 150, render: (row) => formatDate(row.published_at) },
 ];
 
 const fetchNewsRows = ({
@@ -67,7 +50,7 @@ export const RANewsListPage = () => (
     columns={newsColumns}
     fetchRows={fetchNewsRows}
     deleteRow={deleteNews}
-    searchPlaceholder="Cari berita di halaman ini..."
+    searchPlaceholder="Cari judul atau penulis…"
     filterRow={filterNews}
     emptyTitle="Berita tidak ditemukan"
   />

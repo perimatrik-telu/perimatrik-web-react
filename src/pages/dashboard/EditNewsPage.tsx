@@ -1,23 +1,30 @@
 import { useTranslation } from "react-i18next";
 import { getNewsById, updateNews } from "../../controllers";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import { NoDataWidget, Loading } from "../../components";
 import { toast } from "react-toastify";
 import {
+  Alert,
   Box,
-  FormLabel,
   TextField,
   Typography,
   Button,
   CircularProgress,
   Switch,
   FormControlLabel,
+  Grid,
+  Stack,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import { PageHeader } from "../../components/dashboard/PageHeader";
+import { FieldLabel, SectionCard } from "../../components/dashboard/SectionCard";
 import { useAuth } from "../../hooks/useAuth";
 import type { ArticleDetailModel } from "../../types/models";
 import { RichTextEditor } from "../../components/RichTextEditor.tsx";
 import imageCompression from 'browser-image-compression';
+import { ImageDropzone } from "../../components/dashboard/ImageDropzone";
 
 
 export const EditNewsPage = () => {
@@ -63,41 +70,40 @@ export const EditNewsPage = () => {
             setAutoPublish(true);
           }
         } else {
-          toast.error("Berita tidak ditemukan.");
+          toast.error(t("newsForm.notFound"));
         }
       } catch (err) {
         console.error("Error fetching news:", err);
-        toast.error("Gagal memuat data berita.");
+        toast.error(t("newsForm.loadFailed"));
       } finally {
         setLoading(false);
       }
     };
 
     void fetchData();
-  }, [id]);
+  }, [id, t]);
 
   useEffect(() => {
     if (newsData && newsData.data && newsData.data.title) {
-      document.title = `Ubah Berita: ${newsData.data.title} - Dasbor`;
+      document.title = t("newsForm.docEditNamed", { title: newsData.data.title });
     } else {
-      document.title = "Ubah Berita - Dasbor";
+      document.title = t("newsForm.docEdit");
     }
-  }, [newsData]);
+  }, [newsData, t]);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 
   
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) {
-      setImage(null);
-      setPreview(null);
-      return;
-    }
-    
-    let file = files[0];
+  // Revoke the previous blob: preview when it is replaced, so picked images don't leak memory.
+  const replacePreview = (next: string | null) =>
+    setPreview((previous) => {
+      if (previous?.startsWith("blob:")) URL.revokeObjectURL(previous);
+      return next;
+    });
+
+  const handleImageFile = async (file: File) => {
     setError("");
     setIsUploading(true);
     
@@ -110,12 +116,12 @@ export const EditNewsPage = () => {
       
       const compressedFile = await imageCompression(file, options);
       setImage(compressedFile as File);
-      setPreview(URL.createObjectURL(compressedFile));
+      replacePreview(URL.createObjectURL(compressedFile));
     } catch (err) {
       console.error(err);
-      setError("Gagal mengompres gambar.");
+      setError(t("newsForm.compressFailed"));
       setImage(null);
-      setPreview(null);
+      replacePreview(null);
     } finally {
       setIsUploading(false);
     }
@@ -123,7 +129,7 @@ export const EditNewsPage = () => {
 
   const handleRemoveImage = () => {
     setImage(null);
-    setPreview(null);
+    replacePreview(null);
     setError("");
   };
 
@@ -135,7 +141,7 @@ export const EditNewsPage = () => {
     return (
       <NoDataWidget
         imageSrc="/images/empty-image.webp"
-        message="Berita tidak ditemukan."
+        message={t("newsForm.notFound")}
       />
     );
   }
@@ -151,7 +157,7 @@ export const EditNewsPage = () => {
     }
 
     if (!title || !body) {
-      toast.error("Lengkapi semua kolom.");
+      toast.error(t("newsForm.requiredEdit"));
       setLoading(false);
       return;
     }
@@ -174,174 +180,172 @@ export const EditNewsPage = () => {
       const response = await updateNews(id, formData);
 
       if (response?.success) {
-        toast.success("Berita berhasil diperbarui.");
+        toast.success(t("newsForm.updated"));
         navigate("/dashboard/news");
       } else {
-        toast.error((response as { message?: string } | null)?.message || "Berita gagal diperbarui.");
+        toast.error((response as { message?: string } | null)?.message || t("newsForm.updateFailed"));
       }
     } catch (error) {
       console.error("Error updating news:", error);
-      toast.error("Terjadi kesalahan saat memperbarui berita.");
+      toast.error(t("newsForm.updateError"));
     } finally {
       setLoading(false);
     }
   };
 
+  const actions = (
+    <>
+      <Button component={RouterLink} to="/dashboard/news" variant="outlined" color="inherit" disabled={loading} sx={{ borderColor: "divider" }}>
+        {t("crud.batal")}
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSubmit}
+        disabled={loading || isUploading || !title || !body}
+        startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <SaveOutlinedIcon sx={{ fontSize: 16 }} />}
+      >
+        {loading ? t("newsForm.updating") : t("newsForm.save")}
+      </Button>
+    </>
+  );
+
   return (
-    <Box sx={{ padding: 4 }}>
-      <Box sx={{ mb: 3 }}>
-        <FormLabel
-          htmlFor="news-image"
-          sx={{ mb: 1, display: "block", fontWeight: "bold" }}
-        >{t('form.gambar')}</FormLabel>
-
-        <Box
-          sx={{
-            border: "2px dashed #1976d2",
-            padding: 2,
-            borderRadius: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            "&:hover": {
-              backgroundColor: "#f5f5f5",
-            },
-          }}
-        >
-          <input
-            id="news-image"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{ display: "none" }}
-          />
-          {!image && (
-            <>
-              <Button
-                variant="contained"
-                component="label"
-                htmlFor="news-image"
-                sx={{ mb: 1 }}
-              >{t('form.unggahGambar')}</Button>
-              <Typography variant="body2" color="text.secondary">
-                Seret dan lepas atau klik untuk memilih gambar
-              </Typography>
-            </>
-          )}
-
-          {isUploading ? (
-            <Box sx={{ mt: 2 }}>
-              <CircularProgress size={40} color="primary" />
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{t('form.mengunggah')}</Typography>
-            </Box>
-          ) : preview && !isUploading ? (
-            <Box sx={{ mt: 2 }}>
-              <img
-                src={preview}
-                alt="Preview"
-                style={{
-                  maxWidth: "100%",
-                  height: "auto",
-                  borderRadius: "8px",
-                  marginBottom: "8px",
-                }}
-              />
-              <Button
-                fullWidth
-                variant="outlined"
-                color="error"
-                onClick={handleRemoveImage}
-              >{t('form.hapusGambar')}</Button>
-            </Box>
-          ) : null}
-
-          {error && (
-            <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-              {error}
-            </Typography>
-          )}
-        </Box>
-      </Box>
-
-      <Box sx={{ mb: 1, width: "100%" }}>
-        <FormLabel
-          htmlFor="news-title"
-          sx={{ mb: 1, display: "block", fontWeight: "bold" }}
-        >{t('form.judul')}</FormLabel>
-        <TextField
-          id="news-title"
-          variant="outlined"
-          placeholder={t('form.masukkanJudul')}
-          fullWidth
-          value={title}
-          onChange={handleTitleChange}
-          slotProps={{ htmlInput: {
-            maxLength: 100,
-          }, input: {
-            sx: {
-              height: 44,
-              padding: 0,
-            },
-          } }}
-        />
-        <Typography
-          variant="body2"
-          color={title.length === 100 ? "error" : "text.secondary"}
-          sx={{ mt: 1, textAlign: "right" }}
-        >
-          {title.length}/100
-        </Typography>
-      </Box>
-
+    <Stack spacing={3} sx={(theme) => ({ minWidth: 0, "& input": { colorScheme: theme.palette.mode } })}>
       <Box>
-        <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>{t('form.konten')}</FormLabel>
-        <Box sx={{ ".ck-editor__editable": { minHeight: "300px" } }}>
-          <RichTextEditor value={body} onChange={setBody} />
-        </Box>
-      </Box>
-
-      {user?.role === 'admin' && (
-        <Box sx={{ mt: 3 }}>
-          <FormLabel sx={{ mb: 1, display: "block", fontWeight: "bold" }}>
-            Tanggal Terbit
-          </FormLabel>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={autoPublish}
-                onChange={() => setAutoPublish(!autoPublish)}
-                name="autoPublish"
-                color="primary"
-              />
-            }
-            label="Atur otomatis (sekarang)"
-          />
-          <TextField
-            fullWidth
-            type="datetime-local"
-            value={publishedAt}
-            onChange={(e) => setPublishedAt(e.target.value)}
-            disabled={autoPublish}
-            sx={{ mt: 2 }}
-            slotProps={{ inputLabel: {
-              shrink: true,
-            } }}
-          />
-        </Box>
-      )}
-
-      <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          disabled={loading || isUploading || !title || !body}
-        >
-          {loading ? "Memperbarui..." : "Simpan"}
+        <Button component={RouterLink} to="/dashboard/news" size="small" color="inherit" startIcon={<ArrowBackIcon sx={{ fontSize: 16 }} />}
+          sx={{ mb: 1.5, ml: -1, color: "text.secondary", minHeight: 32 }}>
+          {t("newsForm.back")}
         </Button>
+        <PageHeader
+          title={t("newsForm.editTitle")}
+          description={t("newsForm.editDesc")}
+          actions={actions}
+        />
       </Box>
-    </Box>
+
+      <Grid container spacing={3} sx={{ alignItems: "flex-start" }}>
+        <Grid size={{ xs: 12, lg: 8 }} sx={{ minWidth: 0 }}>
+          <SectionCard>
+            <Stack spacing={3}>
+              <Box>
+                <FieldLabel htmlFor="news-title">{t('form.judul')}</FieldLabel>
+                <TextField
+                  id="news-title"
+                  variant="outlined"
+                  placeholder={t('form.masukkanJudul')}
+                  fullWidth
+                  value={title}
+                  onChange={handleTitleChange}
+                  sx={{ "& .MuiInputBase-root": { fontSize: 16, fontWeight: 600 } }}
+                  slotProps={{ htmlInput: { maxLength: 100, "aria-describedby": "news-title-count" } }}
+                />
+                <Typography
+                  id="news-title-count"
+                  sx={{ mt: 0.75, fontSize: 13, textAlign: "right", fontVariantNumeric: "tabular-nums", color: title.length === 100 ? "error.main" : "text.secondary" }}
+                >
+                  {title.length}/100
+                </Typography>
+              </Box>
+
+              <Box sx={{ minWidth: 0 }}>
+                <FieldLabel>{t('form.konten')}</FieldLabel>
+                <Box sx={{
+                  minWidth: 0,
+                  "& .ql-toolbar.ql-snow": { borderTopLeftRadius: 8, borderTopRightRadius: 8 },
+                  "& .ql-container.ql-snow": { borderBottomLeftRadius: 8, borderBottomRightRadius: 8, fontFamily: "inherit", fontSize: 15 },
+                  "& .ql-editor": { minHeight: { xs: 300, sm: 400 }, lineHeight: 1.75, overflowWrap: "anywhere" },
+                  "& .ql-editor a": { color: "primary.main" },
+                }}>
+                  <RichTextEditor value={body} onChange={setBody} ariaLabel={t('form.konten')} />
+                </Box>
+              </Box>
+            </Stack>
+          </SectionCard>
+        </Grid>
+
+        <Grid size={{ xs: 12, lg: 4 }} sx={{ minWidth: 0 }}>
+          <Stack spacing={3} sx={{ position: { lg: "sticky" }, top: { lg: 88 } }}>
+            <SectionCard title={t('form.gambar')} description={t("newsForm.imageDesc")}>
+              <input
+                id="news-image"
+                type="file"
+                accept="image/*"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void handleImageFile(file);
+                  event.target.value = "";
+                }}
+                style={{ display: "none" }}
+              />
+              <ImageDropzone
+                inputId="news-image"
+                preview={preview}
+                isUploading={isUploading}
+                uploadingLabel={t('form.mengunggah')}
+                onFile={(file) => void handleImageFile(file)}
+                onReject={setError}
+              />
+
+              {(!image || (preview && !isUploading)) && (
+                <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
+                  {!image && (
+                    <Button
+                      variant="outlined"
+                      color="inherit"
+                      component="label"
+                      htmlFor="news-image"
+                      fullWidth
+                      sx={{ borderColor: "divider" }}
+                    >{t('form.unggahGambar')}</Button>
+                  )}
+                  {preview && !isUploading && (
+                    <Button
+                      fullWidth
+                      color="error"
+                      onClick={handleRemoveImage}
+                    >{t('form.hapusGambar')}</Button>
+                  )}
+                </Stack>
+              )}
+
+              {error && (
+                <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
+              )}
+            </SectionCard>
+
+            {user?.role === 'admin' && (
+              <SectionCard title={t("newsForm.publishTitle")} description={t("newsForm.publishDesc")}>
+                <Stack spacing={2}>
+                  <FormControlLabel
+                    sx={{ ml: -1, mr: 0, ".MuiFormControlLabel-label": { fontSize: 14 } }}
+                    control={
+                      <Switch
+                        checked={autoPublish}
+                        onChange={() => setAutoPublish(!autoPublish)}
+                        name="autoPublish"
+                        color="primary"
+                      />
+                    }
+                    label={t("newsForm.autoPublish")}
+                  />
+                  <Box>
+                    <FieldLabel htmlFor="news-published-at">{t('form.tanggalPublikasi')}</FieldLabel>
+                    <TextField
+                      id="news-published-at"
+                      fullWidth
+                      type="datetime-local"
+                      value={publishedAt}
+                      onChange={(e) => setPublishedAt(e.target.value)}
+                      disabled={autoPublish}
+                    />
+                  </Box>
+                </Stack>
+              </SectionCard>
+            )}
+          </Stack>
+        </Grid>
+      </Grid>
+    </Stack>
   );
 };

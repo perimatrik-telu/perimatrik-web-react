@@ -380,9 +380,9 @@
     "kontak": "Kontak"
   },
   "profile": {
-    "alamatEmail": "ALAMAT EMAIL",
-    "namaLapangan": "NAMA LAPANGAN",
-    "statusAkun": "STATUS AKUN",
+    "alamatEmail": "Alamat email",
+    "namaLapangan": "Nama lapangan",
+    "statusAkun": "Status akun",
     "aktif": "Aktif Terverifikasi",
     "detail": "Detail Akun",
     "namaLengkap": "Nama Lengkap",
@@ -397,9 +397,9 @@
     "passwordBaru": "Password Baru"
   },
   "setting": {
-    "emailResmi": "EMAIL RESMI",
-    "alamatSekretariat": "ALAMAT SEKRETARIAT",
-    "pratinjauPeta": "PRATINJAU LOKASI PETA",
+    "emailResmi": "Email resmi",
+    "alamatSekretariat": "Alamat sekretariat",
+    "pratinjauPeta": "Pratinjau lokasi peta",
     "urlBelum": "URL peta belum diisi",
     "detailKontak": "Detail Kontak",
     "emailLabel": "Email Resmi",
@@ -429,5 +429,33 @@
   "Lokasi": "Lokasi",
   "Pengaturan": "Pengaturan",
   "Akses": "Akses",
-  "Kontak": "Kontak"
+  "Kontak": "Kontak",
+  "newsForm": {
+    "createTitle": "Tambah berita",
+    "editTitle": "Edit berita",
+    "createDesc": "Tulis kabar resmi organisasi untuk dipublikasikan di website.",
+    "editDesc": "Perbarui judul, konten, gambar, dan tanggal terbit berita.",
+    "back": "Kembali ke berita",
+    "imageDesc": "Gambar ditampilkan pada daftar dan halaman berita.",
+    "publishTitle": "Tanggal terbit",
+    "publishDesc": "Atur kapan berita ditampilkan di website.",
+    "autoPublish": "Atur otomatis (sekarang)",
+    "save": "Simpan",
+    "saving": "Menyimpan…",
+    "updating": "Memperbarui…",
+    "compressFailed": "Gagal mengompres gambar.",
+    "requiredCreate": "Lengkapi semua kolom dan pilih gambar.",
+    "requiredEdit": "Lengkapi semua kolom.",
+    "created": "Berita berhasil dibuat.",
+    "createFailed": "Berita gagal dibuat.",
+    "createError": "Terjadi kesalahan saat membuat berita.",
+    "updated": "Berita berhasil diperbarui.",
+    "updateFailed": "Berita gagal diperbarui.",
+    "updateError": "Terjadi kesalahan saat memperbarui berita.",
+    "notFound": "Berita tidak ditemukan.",
+    "loadFailed": "Gagal memuat data berita.",
+    "docCreate": "Tambah Berita - Dasbor",
+    "docEdit": "Ubah Berita - Dasbor",
+    "docEditNamed": "Ubah Berita: {{title}} - Dasbor"
+  }
 }

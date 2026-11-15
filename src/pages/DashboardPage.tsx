@@ -18,6 +18,7 @@ import { getAllNews } from "../controllers/news-controller";
 import api from "../api/api";
 import { PageHeader, StatusPill } from "../components/dashboard/PageHeader";
 import type { ArticleModel } from "../types/models";
+import { formatDate } from "../utils/format";
 
 type CountMetaResponse = { meta?: { total?: number } };
 type AxiosListResponse = AxiosResponse<{ data?: unknown[] }>;
@@ -30,9 +31,6 @@ const getMetaTotal = (result: PromiseSettledResult<CountMetaResponse | null>) =>
 
 const getAxiosDataLength = (result: PromiseSettledResult<AxiosListResponse | null>) =>
   result.status === "fulfilled" ? result.value?.data.data?.length ?? 0 : 0;
-
-const formatDate = (value?: string | null) =>
-  value ? new Date(value).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : "—";
 
 const cardSx = {
   borderRadius: 3,
@@ -281,7 +279,7 @@ const DashboardPage = () => {
               </Stack>
               <Stack direction="row" sx={{ mt: 2, pt: 2, borderTop: "1px solid", borderColor: "divider", justifyContent: "space-between", alignItems: "center" }}>
                 <Typography sx={{ fontSize: 13, color: "text.secondary" }}>{t("dashboard.statusLabel")}</Typography>
-                <StatusPill tone="success">{roleLabel}</StatusPill>
+                <StatusPill tone={user.role === "admin" ? "warning" : user.role === "officer" ? "info" : "success"}>{roleLabel}</StatusPill>
               </Stack>
             </Paper>
 
