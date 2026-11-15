@@ -6,6 +6,17 @@ interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: BodyInit | object;
 }
 
+/** Error thrown for non-2xx responses; network failures/aborts stay plain TypeErrors. */
+export class ApiError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 export async function fetchApi<T>(
   endpoint: string,
   options?: RequestOptions
@@ -44,8 +55,8 @@ export async function fetchApi<T>(
   const response = await fetch(`${MAIN_URL}${endpoint}`, config);
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Something went wrong");
+    const errorData = await response.json().catch(() => ({}));
+    throw new ApiError(errorData.message || "Something went wrong", response.status);
   }
 
   return response.json();

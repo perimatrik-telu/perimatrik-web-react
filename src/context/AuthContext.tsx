@@ -1,5 +1,5 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { fetchApi } from "../utils/api";
+import { ApiError, fetchApi } from "../utils/api";
 import type { User } from "../types/models";
 import Cookies from "js-cookie";
 import { AuthContext } from "./auth-context";
@@ -44,9 +44,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         .then((response) => {
           setUser((response as AuthUserResponse).data);
         })
-        .catch(() => {
-          Cookies.remove("auth_token", { domain: getCookieDomain() });
-          setToken(null);
+        .catch((error) => {
+          // Only drop the session when the server rejects the token. Aborted requests
+          // (refresh / navigating away), network errors and 5xx must not log the user out.
+          if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+            Cookies.remove("auth_token", { domain: getCookieDomain() });
+            setToken(null);
+          }
           setUser(null);
         })
         .finally(() => {
