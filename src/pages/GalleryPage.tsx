@@ -21,7 +21,6 @@ import MapboxView from "@/components/MapboxView";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import PublicIcon from "@mui/icons-material/Public";
-import MapIcon from "@mui/icons-material/Map";
 
 interface LazyLoadImageProps {
   src: string;
@@ -102,8 +101,6 @@ export const GalleryPage: React.FC = () => {
     700: 2,
     500: 1,
   };
-
-  const sources = galleries ? galleries.map((item) => item.image_url) : [];
 
   return (
     <Container fluid className="my-5 px-5" data-theme={mode}>

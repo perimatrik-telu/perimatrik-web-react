@@ -6,7 +6,7 @@ type Issues = { pageErrors: string[]; consoleErrors: string[]; failedApi: string
 const IGNORED_CONSOLE = [/Download the React DevTools/i, /favicon/i, /sw\.js/i, /mapbox/i, /Failed to load resource.*(googleapis|gstatic)/i];
 
 export const test = base.extend<{ issues: Issues }>({
-  issues: async ({ page }, use, testInfo) => {
+  issues: async ({ page }, provide, testInfo) => {
     const issues: Issues = { pageErrors: [], consoleErrors: [], failedApi: [] };
     page.on("pageerror", (err) => issues.pageErrors.push(err.message));
     page.on("console", (msg) => {
@@ -18,7 +18,7 @@ export const test = base.extend<{ issues: Issues }>({
       if (res.url().includes("/api/") && res.status() >= 500) issues.failedApi.push(`${res.status()} ${res.url()}`);
     });
 
-    await use(issues);
+    await provide(issues);
 
     if (issues.consoleErrors.length) {
       await testInfo.attach("console-errors", { body: issues.consoleErrors.join("\n\n"), contentType: "text/plain" });

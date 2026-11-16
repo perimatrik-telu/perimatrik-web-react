@@ -106,7 +106,7 @@ export const NavbarPartial = () => {
 
   const renderNavLink = (link: NavbarFrontItem) => {
     // Improved active state logic for subdomains and local dev
-    let navItemActive = false;
+    let navItemActive: boolean;
     
     if (isNewsSubdomain) {
       if (link.path === "/news") {
