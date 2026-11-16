@@ -4,6 +4,7 @@ import "../../public/css/navbar.css";
 import routes from "../constants/routes.js";
 import { useThemeContext } from "../context/theme-context";
 import { useTranslation } from "react-i18next";
+import { isVercelHost } from "../utils/domain";
 
 import { IconButton, Tooltip, Box } from "@mui/material";
 import {
@@ -32,8 +33,9 @@ export const NavbarPartial = () => {
   const isNewsSubdomain = !isLocalhost && hostname.includes("news.");
   
   // Base URLs
-  const mainDomain = isLocalhost ? "" : "https://perimatrik.org";
-  const newsDomain = isLocalhost ? "/news" : "https://news.perimatrik.org";
+  const useSameHost = isLocalhost || isVercelHost(hostname);
+  const mainDomain = useSameHost ? "" : "https://perimatrik.org";
+  const newsDomain = useSameHost ? "/news" : "https://news.perimatrik.org";
 
   const toggleNavbar = () => {
     setIsCollapsed(!isCollapsed);

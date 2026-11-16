@@ -1,3 +1,5 @@
+export const isVercelHost = (hostname: string) => hostname.endsWith(".vercel.app");
+
 export const getCanonicalRootHost = (hostname: string) => {
   if (hostname.includes("localhost") || hostname === "127.0.0.1") {
     return hostname;
@@ -11,6 +13,10 @@ export const getCanonicalRootHost = (hostname: string) => {
 
 export const getDashboardLoginUrl = (location: Location) => {
   const hostname = location.hostname;
+
+  if (isVercelHost(hostname)) {
+    return "/login";
+  }
 
   if (hostname.includes("localhost") || hostname === "127.0.0.1") {
     return "/dashboard";

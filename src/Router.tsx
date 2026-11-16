@@ -16,19 +16,6 @@ import { NewsPage } from "./pages/NewsPage";
 import { NewsDetailPage } from "./pages/NewsDetailPage";
 import { GalleryPage } from "./pages/GalleryPage";
 
-// Dashboard Pages
-import { getCanonicalRootHost } from "./utils/domain";
-
-/**
- * A component to handle redirection to external subdomains safely
- */
-const ExternalRedirect = ({ url }: { url: string }) => {
-  useEffect(() => {
-    window.location.href = url;
-  }, [url]);
-  return null;
-};
-
 function AppRoutes() {
   const hostname = window.location.hostname;
   const isLocalhost = hostname.includes("localhost") || hostname === "127.0.0.1";
@@ -91,19 +78,11 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<LoginPage />} />
 
-      {/* Unified Dashboard Route for Localhost */}
+      {/* Dashboard is also available on the main host, including Vercel. */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard/*" element={<DashboardAdminApp />} />
       </Route>
 
-      <Route 
-        path="/dashboard/*" 
-        element={
-          !isLocalhost 
-            ? <ExternalRedirect url={`https://dashboard.${getCanonicalRootHost(hostname)}`} />
-            : <Navigate to="/dashboard" replace />
-        } 
-      />
     </Routes>
   );
 }
