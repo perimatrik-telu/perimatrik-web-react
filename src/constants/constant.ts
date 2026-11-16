@@ -1,6 +1,6 @@
 export const API_DOMAIN =
   import.meta.env.VITE_IS_PRODUCTION === "true"
-    ? "https://api.perimatrik.org"
+    ? "https://perimatrik-api.vercel.app"
     : "http://127.0.0.1:8000";
 
 export const MAIN_URL = `${API_DOMAIN}/api/v1/`;

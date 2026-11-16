@@ -1,17 +1,12 @@
 name: CI/CD
 
-# CI on every push/PR; deploys to Vercel via the Vercel CLI (not Vercel's Git integration,
-# which is blocked on the Hobby plan for private organization repositories).
-#   push to `production` -> Vercel production deployment
-#   push to `main`, PRs  -> Vercel preview deployment (URL commented on the PR)
+# Run manually from GitHub Actions; deploys to Vercel via the Vercel CLI.
+#   select branch `production` -> Vercel production deployment
+#   select any other branch   -> Vercel preview deployment
 #
 # Required repository secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
 
 on:
-  push:
-    branches: [main, production]
-  pull_request:
-    branches: [main, production]
   workflow_dispatch:
 
 concurrency:
