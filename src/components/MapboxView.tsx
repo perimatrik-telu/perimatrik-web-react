@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
-// @ts-ignore
-import Map, { Marker, Popup, NavigationControl, FullscreenControl, ScaleControl, GeolocateControl } from 'react-map-gl/mapbox';
+import Map, { Marker, NavigationControl, FullscreenControl, ScaleControl, GeolocateControl, type MapRef } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { GalleryData } from '@/types/models';
 
@@ -13,10 +12,9 @@ interface MapboxViewProps {
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoiYmFyZGFpIiwiYSI6ImNsazZzMnd5azA3YWEzZW8wcTF4cmY5YWgifQ.P4v76_O5Lp8yN0Qh4-m_2A'; // Fallback to a demo token if undefined (for demonstration purposes, though usually invalid for production without right origin). But wait, I'll provide a placeholder or a free token.
 
-import { useMap } from "react-map-gl/mapbox";
 
 const MapboxView: React.FC<MapboxViewProps> = ({ galleries, onPinClick, mode }) => {
-  const mapRef = React.useRef<any>(null);
+  const mapRef = React.useRef<MapRef>(null);
   const validGalleries = useMemo(() => {
     return galleries.filter(
       g => g.latitude != null && g.longitude != null
@@ -37,7 +35,7 @@ const MapboxView: React.FC<MapboxViewProps> = ({ galleries, onPinClick, mode }) 
         onLoad={(e) => {
           const map = e.target;
           let userInteracting = false;
-          let spinEnabled = true;
+          const spinEnabled = true;
           const secondsPerRevolution = 120;
           const maxSpinZoom = 5;
           const slowSpinZoom = 3;
@@ -93,7 +91,7 @@ const MapboxView: React.FC<MapboxViewProps> = ({ galleries, onPinClick, mode }) 
             longitude={g.lng} 
             latitude={g.lat} 
             anchor="bottom"
-            onClick={(e: any) => {
+            onClick={(e) => {
               e.originalEvent.stopPropagation();
               if (mapRef.current) {
                 const currentZoom = mapRef.current.getZoom();
