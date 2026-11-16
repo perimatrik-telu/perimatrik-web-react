@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://api.perimatrik.org',
+        target: 'https://perimatrik-api.vercel.app',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api')
       }
